@@ -11,9 +11,11 @@
  */
 
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Container, Section } from "@/components/ui/container";
 import { ZephlynLogo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { PageTransition } from "@/components/transitions/page-transition";
 
 export const metadata: Metadata = {
   title: "Sample workflow audit — what you get in 30 minutes",
@@ -178,24 +180,33 @@ export default function SampleAuditPage() {
   const totalRecovered = "$137,000";
   return (
     <div className="bg-background text-foreground min-h-screen">
-      <header className="border-b border-border bg-background/85 backdrop-blur-md sticky top-0 z-40">
+      <header
+        className="border-b border-border bg-background/85 backdrop-blur-sm sticky top-0 z-40"
+        style={{ viewTransitionName: "site-header" }}
+      >
         <div className="max-w-[1320px] mx-auto flex items-center justify-between h-[72px] px-5 md:px-10">
-          <a href="/" aria-label="Back to Zephlyn home">
+          <Link
+            href="/"
+            transitionTypes={["nav-back"]}
+            aria-label="Back to Zephlyn home"
+          >
             <ZephlynLogo size={32} boxed />
-          </a>
+          </Link>
           <div className="flex items-center gap-4">
-            <a
+            <Link
               href="/"
+              transitionTypes={["nav-back"]}
               className="type-nav text-muted-foreground hover:text-foreground transition hidden sm:inline-block"
             >
               ← Back home
-            </a>
+            </Link>
             <ThemeToggle />
           </div>
         </div>
       </header>
 
-      <main className="relative">
+      <PageTransition>
+        <main className="relative">
         {/* —— Cover —— */}
         <Section className="pt-20">
           <Container>
@@ -392,17 +403,19 @@ export default function SampleAuditPage() {
                 >
                   Book the 30-min audit
                 </a>
-                <a
+                <Link
                   href="/"
+                  transitionTypes={["nav-back"]}
                   className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-transparent text-foreground border border-border hover:bg-muted transition"
                 >
                   ← Back to homepage
-                </a>
+                </Link>
               </div>
             </div>
           </Container>
         </Section>
-      </main>
+        </main>
+      </PageTransition>
     </div>
   );
 }

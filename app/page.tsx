@@ -18,6 +18,10 @@ import { RevealOnScroll } from "@/components/animations/reveal-on-scroll";
 import { AmbientGlows } from "@/components/animations/ambient-glows";
 import { ScrollProgressBar } from "@/components/animations/scroll-progress-bar";
 import { ScrollGuideLine } from "@/components/animations/scroll-guide-line";
+import { SectionSpy } from "@/components/animations/section-spy";
+import { SectionDivider } from "@/components/animations/section-divider";
+import { PageTransition } from "@/components/transitions/page-transition";
+import { SendOff } from "@/components/marketing/send-off";
 import { cn } from "@/lib/cn";
 
 const REASONS: Array<{ title: string; body: string }> = [
@@ -80,14 +84,17 @@ const FAQS: Array<{ q: string; a: string }> = [
 
 function SiteHeader() {
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 backdrop-blur-sm border-b border-border bg-background/85">
+    <header
+      className="fixed top-0 left-0 right-0 z-40 backdrop-blur-sm border-b border-border bg-background/85"
+      style={{ viewTransitionName: "site-header" }}
+    >
       <div className="max-w-[1320px] mx-auto flex items-center justify-between h-[72px] px-5 md:px-10">
         <ZephlynLogo size={32} boxed />
-        <nav className="hidden md:flex items-center gap-7 type-nav">
-          <a href="#pillars" className="link-underline text-muted-foreground hover:text-foreground transition-colors">Product</a>
-          <a href="#why" className="link-underline text-muted-foreground hover:text-foreground transition-colors">Workflows</a>
-          <a href="#pricing" className="link-underline text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-          <a href="#faq" className="link-underline text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
+        <nav data-section-spy className="hidden md:flex items-center gap-7 type-nav">
+          <a href="#pillars" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">Product</a>
+          <a href="#why" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">Workflows</a>
+          <a href="#pricing" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
+          <a href="#faq" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
           {/* Cmd+K hint — discovery for the palette */}
           <span
             aria-hidden
@@ -201,26 +208,35 @@ export default function HomePage() {
       <ScrollProgressBar />
       <ScrollGuideLine />
       <SiteHeader />
-      <LandingExperience />
+      <SectionSpy sectionIds={["pillars", "why", "compare", "roi", "pricing", "faq"]} />
 
-      {/* Post-journey content — opaque background, sits above the fixed canvas */}
-      <main className="relative z-20 bg-background isolate">
-        {/* Ambient purple glow blobs — slow drift behind all sections */}
-        <AmbientGlows className="-z-10" />
-        <RevealOnScroll><StatStrip /></RevealOnScroll>
-        <RevealOnScroll><SampleWorkflowPicker /></RevealOnScroll>
-        <RevealOnScroll><SixPillars /></RevealOnScroll>
-        <RevealOnScroll><Qualifier /></RevealOnScroll>
-        <RevealOnScroll><WhyZephlyn /></RevealOnScroll>
-        <RevealOnScroll><ComparisonMatrix /></RevealOnScroll>
-        <RevealOnScroll><RoiCalculator /></RevealOnScroll>
-        <RevealOnScroll><PricingTiers /></RevealOnScroll>
-        <RevealOnScroll><FaqSection /></RevealOnScroll>
-        <RevealOnScroll><FinalCta /></RevealOnScroll>
-      </main>
-      <MobileStickyCta />
+      <PageTransition>
+        <LandingExperience />
 
-      <OversizedFooter />
+        {/* Post-journey content — opaque background, sits above the fixed canvas */}
+        <main className="relative z-20 bg-background isolate">
+          {/* Ambient purple glow blobs — slow drift behind all sections */}
+          <AmbientGlows className="-z-10" />
+          <RevealOnScroll><StatStrip /></RevealOnScroll>
+          <SectionDivider variant="arrow" />
+          <RevealOnScroll><SampleWorkflowPicker /></RevealOnScroll>
+          <RevealOnScroll><SixPillars /></RevealOnScroll>
+          <SectionDivider variant="wave" />
+          <RevealOnScroll><Qualifier /></RevealOnScroll>
+          <RevealOnScroll><WhyZephlyn /></RevealOnScroll>
+          <SectionDivider variant="asterisk" />
+          <RevealOnScroll><ComparisonMatrix /></RevealOnScroll>
+          <RevealOnScroll><RoiCalculator /></RevealOnScroll>
+          <SectionDivider variant="ticks" />
+          <RevealOnScroll><PricingTiers /></RevealOnScroll>
+          <RevealOnScroll><FaqSection /></RevealOnScroll>
+          <SectionDivider variant="compass" />
+          <SendOff />
+          <RevealOnScroll><FinalCta /></RevealOnScroll>
+        </main>
+        <MobileStickyCta />
+        <OversizedFooter />
+      </PageTransition>
 
       {/* Cmd+K palette — global, listens for the keybinding everywhere */}
       <CommandPalette />

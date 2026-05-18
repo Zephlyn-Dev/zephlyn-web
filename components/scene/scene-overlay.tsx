@@ -11,6 +11,7 @@
  */
 
 import * as React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
   useScrollProgress,
@@ -256,12 +257,13 @@ export function SceneOverlay({ proxyRef }: Props) {
             anything.
           </Sub>
           <div className="mt-10 flex flex-wrap items-center gap-3 pointer-events-auto justify-center">
-            <a
+            <Link
               href="/sample-audit"
+              transitionTypes={["nav-forward"]}
               className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-transparent text-foreground border border-border hover:bg-muted hover:border-purple-300 dark:hover:border-purple-700 transition-[background,color,box-shadow,transform] duration-150 ease-out"
             >
               See a sample audit
-            </a>
+            </Link>
             <a
               href="#get-started"
               className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 active:bg-purple-900 active:scale-[0.98] transition-[background,color,box-shadow,transform] duration-150 ease-out"

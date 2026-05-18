@@ -10,6 +10,7 @@
  */
 
 import * as React from "react";
+import Link from "next/link";
 import { Container, Section } from "@/components/ui/container";
 import { Button } from "@/components/ui/button";
 import { LiveTicker } from "@/components/marketing/live-ticker";
@@ -60,12 +61,13 @@ export function ReducedMotionLanding() {
             anything.
           </Sub>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a
+            <Link
               href="/sample-audit"
+              transitionTypes={["nav-forward"]}
               className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-transparent text-foreground border border-border hover:bg-muted hover:border-purple-300 dark:hover:border-purple-700 transition"
             >
               See a sample audit
-            </a>
+            </Link>
             <a
               href="#get-started"
               className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 transition"

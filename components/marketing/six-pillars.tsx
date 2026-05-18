@@ -267,41 +267,62 @@ export function SixPillars() {
 
           if (!desktop) return;
 
-          // —— Desktop: pin + scrubbed assembly ——
-          // Two waves: top row (0-3) lands first, bottom row (3-5) lands
-          // second. Each card scales from 0.65 → 1, opacity 0.25 → 1,
-          // y 60 → 0, with a slight rotation.
-          const tl = gsap.timeline({
-            scrollTrigger: {
-              trigger: root,
-              start: "top 70%",
-              end: "+=600",
-              scrub: 0.6,
-            },
-          });
+          // —— Desktop: two-wave assembly ——
+          // Switched from a scrubbed gsap.from() to an explicit fromTo
+          // with toggleActions. Two reasons:
+          //  1) The scrub variant could leave cards stuck mid-animation
+          //     (opacity 0.25, rotated, scaled down) if ScrollTrigger
+          //     measured the start/end before layout settled — a
+          //     common race after we deferred GsapProvider's initial
+          //     refresh past the boot screen.
+          //  2) fromTo is explicit about both endpoints so even a
+          //     refresh-race lands cards at their final visible state.
+          // The two-wave delay (top row first, bottom row second) is
+          // preserved by staggering across all 6 cards and giving the
+          // bottom row a slightly longer delay.
+          const topRow = Array.from(cards).slice(0, 3);
+          const bottomRow = Array.from(cards).slice(3);
 
-          tl.from(
-            Array.from(cards).slice(0, 3),
+          gsap.fromTo(
+            topRow,
+            { y: 70, scale: 0.78, opacity: 0, rotate: -3 },
             {
-              y: 70,
-              scale: 0.7,
-              opacity: 0.25,
-              rotate: -3,
+              y: 0,
+              scale: 1,
+              opacity: 1,
+              rotate: 0,
+              duration: 0.8,
               ease: "power3.out",
               stagger: 0.08,
-            },
-            0
-          ).from(
-            Array.from(cards).slice(3),
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: root,
+                start: "top 80%",
+                toggleActions: "play none none none",
+                invalidateOnRefresh: true,
+              },
+            }
+          );
+          gsap.fromTo(
+            bottomRow,
+            { y: 70, scale: 0.78, opacity: 0, rotate: 3 },
             {
-              y: 70,
-              scale: 0.7,
-              opacity: 0.25,
-              rotate: 3,
+              y: 0,
+              scale: 1,
+              opacity: 1,
+              rotate: 0,
+              duration: 0.8,
               ease: "power3.out",
               stagger: 0.08,
-            },
-            0.25
+              delay: 0.2,
+              clearProps: "transform",
+              scrollTrigger: {
+                trigger: root,
+                start: "top 80%",
+                toggleActions: "play none none none",
+                invalidateOnRefresh: true,
+              },
+            }
           );
 
           // Mega-number + icon micro-pop as each card lands
