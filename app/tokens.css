@@ -1,0 +1,99 @@
+/* ============================================================
+   Zephlyn — Primitive design tokens
+   Raw brand values. Never reference these directly in components.
+   Components consume the *semantic* tokens defined in globals.css.
+   ============================================================ */
+
+:root {
+  /* ——— Brand surface ——— */
+  --zeph-paper:        #FBFAFE;   /* warm-tinted white */
+  --zeph-lavender:     #F8F6FC;   /* light mode page background — subtle purple wash */
+  --zeph-ink:          #0A0517;   /* warm-tinted black */
+  --zeph-white:        #FFFFFF;
+  --zeph-black:        #000000;
+
+  /* ——— Purple scale (Royal Violet) ——— */
+  --zeph-purple-50:    #F6F2FF;
+  --zeph-purple-100:   #EDE6FF;
+  --zeph-purple-200:   #D4C2FF;
+  --zeph-purple-300:   #B69AFF;
+  --zeph-purple-400:   #9B6BFF;
+  --zeph-purple-500:   #7C3AED;   /* hover / highlight */
+  --zeph-purple-600:   #5B2BE0;   /* brand mark line */
+  --zeph-purple-700:   #4F1DD0;   /* primary CTA */
+  --zeph-purple-800:   #3F1DA8;   /* deep mark / headers on light */
+  --zeph-purple-900:   #2C1271;
+  --zeph-purple-950:   #1B0B3A;
+
+  /* ——— Neutral scale (cool-warm purple-tinted gray) ——— */
+  --zeph-gray-50:      #F6F4F9;
+  --zeph-gray-100:     #EDEAF2;
+  --zeph-gray-200:     #DAD5E2;
+  --zeph-gray-300:     #BCB4C9;
+  --zeph-gray-400:     #948BA8;
+  --zeph-gray-500:     #6E6588;
+  --zeph-gray-600:     #524A67;
+  --zeph-gray-700:     #3D374D;
+  --zeph-gray-800:     #292435;
+  --zeph-gray-900:     #161220;
+  --zeph-gray-950:     #0A0817;
+
+  /* ——— Status / signal colors ——— */
+  --zeph-success-500:  #16A34A;
+  --zeph-success-300:  #4ADE80;
+  --zeph-warning-500:  #D97706;
+  --zeph-warning-300:  #FBBF24;
+  --zeph-danger-500:   #DC2626;
+  --zeph-danger-300:   #F87171;
+  --zeph-info-500:     #7C3AED;   /* same family as primary */
+  --zeph-info-300:     #B69AFF;
+
+  /* ——— Spacing scale (4px base) ——— */
+  /* Tailwind ships this natively. These mirror the scale for non-Tailwind use. */
+  --zeph-space-0:    0;
+  --zeph-space-1:    0.25rem;     /* 4 */
+  --zeph-space-2:    0.5rem;      /* 8 */
+  --zeph-space-3:    0.75rem;     /* 12 */
+  --zeph-space-4:    1rem;        /* 16 */
+  --zeph-space-5:    1.25rem;     /* 20 */
+  --zeph-space-6:    1.5rem;      /* 24 */
+  --zeph-space-8:    2rem;        /* 32 */
+  --zeph-space-10:   2.5rem;      /* 40 */
+  --zeph-space-12:   3rem;        /* 48 */
+  --zeph-space-16:   4rem;        /* 64 */
+  --zeph-space-20:   5rem;        /* 80 */
+  --zeph-space-24:   6rem;        /* 96 */
+
+  /* ——— Radius scale ——— */
+  --zeph-radius-sm:    6px;
+  --zeph-radius-md:    10px;
+  --zeph-radius-lg:    14px;
+  --zeph-radius-xl:    20px;
+  --zeph-radius-2xl:   28px;
+  --zeph-radius-full:  9999px;
+
+  /* ——— Shadow scale (tuned for light surfaces) ——— */
+  --zeph-shadow-sm:    0 1px 2px 0 rgba(10, 5, 23, 0.06);
+  --zeph-shadow-md:    0 4px 12px -2px rgba(10, 5, 23, 0.08), 0 2px 4px -2px rgba(10, 5, 23, 0.04);
+  --zeph-shadow-lg:    0 12px 32px -8px rgba(10, 5, 23, 0.12), 0 4px 8px -4px rgba(10, 5, 23, 0.06);
+  --zeph-shadow-xl:    0 24px 56px -12px rgba(10, 5, 23, 0.18);
+  --zeph-shadow-focus: 0 0 0 3px rgba(124, 58, 237, 0.36);
+
+  /* ——— Layout ——— */
+  --zeph-container-max:   1280px;
+  --zeph-page-padding-x:  clamp(1rem, 4vw, 2.5rem);
+  --zeph-navbar-h:        64px;
+  --zeph-section-py:      clamp(3rem, 8vw, 6rem);
+
+  /* ——— Type families ——— */
+  --zeph-font-display:  "Satoshi", "Plus Jakarta Sans", "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --zeph-font-body:     "Satoshi", "Plus Jakarta Sans", "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --zeph-font-mono:     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ——— Motion ——— */
+  --zeph-ease:          cubic-bezier(0.22, 1, 0.36, 1);
+  --zeph-ease-in:       cubic-bezier(0.4, 0, 1, 1);
+  --zeph-dur-fast:      120ms;
+  --zeph-dur:           200ms;
+  --zeph-dur-slow:      320ms;
+}
