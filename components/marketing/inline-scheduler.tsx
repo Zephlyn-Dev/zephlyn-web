@@ -190,7 +190,6 @@ function CalEmbed({ link }: { link: string }) {
     // SDK in the bundle — pre-launch the preview is rendered, post-launch
     // a single env var flips this on for real bookings.
     (async () => {
-      // @ts-expect-error - Cal embed snippet attaches to window
       if (typeof window === "undefined" || cancelled) return;
       const w = window as unknown as {
         Cal?: ((cmd: string, args?: unknown) => void) & {

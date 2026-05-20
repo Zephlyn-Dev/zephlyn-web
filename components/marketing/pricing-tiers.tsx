@@ -208,7 +208,7 @@ export function PricingTiers() {
               <div className="mt-auto pt-2">
                 <Button
                   type="button"
-                  variant={t.emphasised ? "default" : "outline"}
+                  variant={t.emphasised ? "primary" : "outline"}
                   className="w-full"
                 >
                   {t.cta}
