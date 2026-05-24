@@ -1,28 +1,18 @@
 import { Container, Section } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
 import { ZephlynLogo } from "@/components/brand/logo";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { LandingExperience } from "@/components/landing-experience";
-import { StatStrip } from "@/components/marketing/stat-strip";
-import { RoiCalculator } from "@/components/marketing/roi-calculator";
 import { Qualifier } from "@/components/marketing/qualifier";
-import { ComparisonMatrix } from "@/components/marketing/comparison-matrix";
-import { SampleWorkflowPicker } from "@/components/marketing/sample-workflow-picker";
 import { SixPillars } from "@/components/marketing/six-pillars";
-import { PricingTiers } from "@/components/marketing/pricing-tiers";
 import { OversizedFooter } from "@/components/marketing/oversized-footer";
 import { CommandPalette } from "@/components/marketing/command-palette";
-import { MobileStickyCta } from "@/components/marketing/mobile-sticky-cta";
-import { InlineScheduler } from "@/components/marketing/inline-scheduler";
 import { RevealOnScroll } from "@/components/animations/reveal-on-scroll";
 import { AmbientGlows } from "@/components/animations/ambient-glows";
 import { ScrollProgressBar } from "@/components/animations/scroll-progress-bar";
 import { ScrollGuideLine } from "@/components/animations/scroll-guide-line";
-import { SectionSpy } from "@/components/animations/section-spy";
 import { SectionDivider } from "@/components/animations/section-divider";
 import { PageTransition } from "@/components/transitions/page-transition";
 import { SendOff } from "@/components/marketing/send-off";
-import { cn } from "@/lib/cn";
 
 const REASONS: Array<{ title: string; body: string }> = [
   {
@@ -46,11 +36,11 @@ const REASONS: Array<{ title: string; body: string }> = [
 const FAQS: Array<{ q: string; a: string }> = [
   {
     q: "How long does a buildout take?",
-    a: "Two-week audit, then a three-week buildout for the first three workflows. After that, we layer in additional automations as your shop needs them.",
+    a: "Depends on scope — we'll know after the first conversation. The work starts with mapping what you have today and what's actually slowing the business down, then we agree on what's worth building first.",
   },
   {
     q: "What if our current process is a mess?",
-    a: "That's actually the better starting point. The audit's whole job is to map what you have today — phones, spreadsheets, half-built Zaps, the works — and find what's worth automating first.",
+    a: "That's a better starting point than you'd think. The first step is mapping what you have — phones, spreadsheets, half-built Zaps, the works — and finding what's worth automating first.",
   },
   {
     q: "Do we have to switch from ServiceTitan / Jobber / our CRM?",
@@ -65,20 +55,20 @@ const FAQS: Array<{ q: string; a: string }> = [
     a: "An admin reads the form and types into the CRM. We build the system so the form never needs a human to retype it. Then the admin handles judgment calls, not data entry.",
   },
   {
-    q: "What does ongoing support actually cover?",
-    a: "Fixing workflows when something upstream changes (your CRM update, a new lead source, a new tech). Adding new automations as you grow. Monthly check-in on what's working.",
+    q: "What would month-to-month look like if we kept working together?",
+    a: "Fixing workflows when something upstream changes (a CRM update, a new lead source, a new tech). Adding new automations as the shop grows. Checking in regularly on what's actually helping and what isn't.",
   },
   {
     q: "Do you work with small shops or only enterprise?",
-    a: "Both. A two-truck plumbing shop benefits the same way a 40-tech HVAC company does — fewer dropped leads, less admin time, more bookings off the same inbound volume.",
+    a: "We're early — we're talking to shops of a range of sizes right now to figure out where we add the most value. If admin work is slowing the business down, the conversation's worth having.",
   },
   {
     q: "Which trades do you work with?",
-    a: "HVAC, roofing, plumbing, electrical, restoration, and solar installers. The common pattern is field-service work with office and admin bottlenecks — that's where automation has the clearest ROI.",
+    a: "HVAC, roofing, plumbing, electrical, restoration, and solar installers. The common pattern is field-service work with office and admin bottlenecks — that's where automation has the clearest payoff.",
   },
   {
     q: "Are you a SaaS product, an agency, or something else?",
-    a: "A productized automation service with recurring support. We're not selling you a dashboard, and we're not a fully bespoke agency — the work is structured enough to ship in weeks and repeat across shops. As patterns prove out, the strongest pieces will turn into software later.",
+    a: "A productized automation service with recurring support. We're not selling you a dashboard, and we're not a fully bespoke agency — we fix workflows for one shop at a time, learn what repeats across shops, and plan to turn the strongest pieces into software later.",
   },
 ];
 
@@ -90,22 +80,15 @@ function SiteHeader() {
     >
       <div className="max-w-[1320px] mx-auto flex items-center justify-between h-[72px] px-5 md:px-10">
         <ZephlynLogo size={32} boxed />
-        <nav data-section-spy className="hidden md:flex items-center gap-7 type-nav">
-          <a href="#pillars" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">Product</a>
-          <a href="#why" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">Workflows</a>
-          <a href="#pricing" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">Pricing</a>
-          <a href="#faq" className="nav-spy-link link-underline text-muted-foreground hover:text-foreground transition-colors">FAQ</a>
-          {/* Cmd+K hint — discovery for the palette */}
-          <span
-            aria-hidden
-            className="inline-flex items-center gap-1.5 font-mono text-[10.5px] tracking-[0.06em] text-muted-foreground/70 border border-border rounded-md px-2 py-1"
-            title="Press Cmd/Ctrl + K to open the command palette"
+        <div className="flex items-center gap-2 md:gap-3">
+          <a
+            href="mailto:social@zephlyn.io"
+            className="type-button hidden md:inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-9 px-4 text-[13px] bg-transparent text-foreground border border-border hover:bg-muted hover:border-purple-300 dark:hover:border-purple-700 transition-[background,color,border-color] duration-150 ease-out"
           >
-            <kbd className="text-foreground/80">⌘</kbd>
-            <kbd className="text-foreground/80">K</kbd>
-          </span>
+            Get in touch
+          </a>
           <ThemeToggle />
-        </nav>
+        </div>
       </div>
     </header>
   );
@@ -149,7 +132,7 @@ function FaqSection() {
     <Section id="faq" className="border-t border-border">
       <Container className="max-w-[760px]">
         <p className="type-overline text-primary mb-4">FAQ</p>
-        <h2 className="type-h2 text-foreground">Questions we get a lot.</h2>
+        <h2 className="type-h2 text-foreground">Common questions.</h2>
 
         <div className="mt-10">
           {FAQS.map((f) => (
@@ -168,34 +151,22 @@ function FinalCta() {
   return (
     <Section id="get-started" className="border-t border-border">
       <Container>
-        <div className="cta-band p-8 md:p-12 flex flex-col gap-8">
+        <div className="cta-band p-8 md:p-12 flex flex-col gap-8 items-start">
           <div className="max-w-[640px]">
-            <p className="type-overline text-primary mb-3">Get started</p>
-            <h2 className="type-h2 text-foreground">
-              Pick a time. We&apos;ll bring the audit.
-            </h2>
+            <p className="type-overline text-primary mb-3">Get in touch</p>
+            <h2 className="type-h2 text-foreground">Want to talk?</h2>
             <p className="type-body-lg text-muted-foreground mt-4">
-              30 minutes, screen-share. We map your highest-leverage
-              workflows across lead capture, estimates, scheduling, and
-              ops handoffs — cost each one, rank them, and tell you which
-              three would pay back fastest. If none are worth building,
-              lunch&apos;s on us.
+              Email us with what&apos;s slowing your shop down. We&apos;ll
+              write back the same day with whether we think we can help.
             </p>
           </div>
 
-          {/* Inline scheduler — reduces the booking flow to a single screen */}
-          <InlineScheduler />
-
-          <p className="type-caption text-muted-foreground text-center">
-            Prefer email? We&apos;re at{" "}
-            <a
-              href="mailto:hi@zephlyn.co"
-              className="text-primary hover:underline underline-offset-4"
-            >
-              hi@zephlyn.co
-            </a>{" "}
-            — same humans answer either way.
-          </p>
+          <a
+            href="mailto:social@zephlyn.io"
+            className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-7 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 active:bg-purple-900 active:scale-[0.98] transition-[background,color,box-shadow,transform] duration-150 ease-out"
+          >
+            social@zephlyn.io
+          </a>
         </div>
       </Container>
     </Section>
@@ -208,8 +179,6 @@ export default function HomePage() {
       <ScrollProgressBar />
       <ScrollGuideLine />
       <SiteHeader />
-      <SectionSpy sectionIds={["pillars", "why", "compare", "roi", "pricing", "faq"]} />
-
       <PageTransition>
         <LandingExperience />
 
@@ -217,24 +186,16 @@ export default function HomePage() {
         <main className="relative z-20 bg-background isolate">
           {/* Ambient purple glow blobs — slow drift behind all sections */}
           <AmbientGlows className="-z-10" />
-          <RevealOnScroll><StatStrip /></RevealOnScroll>
-          <SectionDivider variant="arrow" />
-          <RevealOnScroll><SampleWorkflowPicker /></RevealOnScroll>
           <RevealOnScroll><SixPillars /></RevealOnScroll>
           <SectionDivider variant="wave" />
           <RevealOnScroll><Qualifier /></RevealOnScroll>
           <RevealOnScroll><WhyZephlyn /></RevealOnScroll>
-          <SectionDivider variant="asterisk" />
-          <RevealOnScroll><ComparisonMatrix /></RevealOnScroll>
-          <RevealOnScroll><RoiCalculator /></RevealOnScroll>
           <SectionDivider variant="ticks" />
-          <RevealOnScroll><PricingTiers /></RevealOnScroll>
           <RevealOnScroll><FaqSection /></RevealOnScroll>
           <SectionDivider variant="compass" />
           <SendOff />
           <RevealOnScroll><FinalCta /></RevealOnScroll>
         </main>
-        <MobileStickyCta />
         <OversizedFooter />
       </PageTransition>
 

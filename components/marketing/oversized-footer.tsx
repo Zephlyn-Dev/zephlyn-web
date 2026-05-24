@@ -29,27 +29,24 @@ const COLS: Array<{ heading: string; links: Array<{ label: string; href: string 
     links: [
       { label: "What we automate", href: "#pillars" },
       { label: "Why Zephlyn",       href: "#why" },
-      { label: "Pricing",           href: "#pricing" },
       { label: "FAQ",               href: "#faq" },
     ],
   },
   {
     heading: "Verticals",
     links: [
-      { label: "HVAC",              href: "#sample-workflow" },
-      { label: "Roofing",           href: "#sample-workflow" },
-      { label: "Plumbing",          href: "#sample-workflow" },
-      { label: "Electrical",        href: "#sample-workflow" },
-      { label: "Restoration",       href: "#sample-workflow" },
-      { label: "Solar",             href: "#sample-workflow" },
+      { label: "HVAC",              href: "#pillars" },
+      { label: "Roofing",           href: "#pillars" },
+      { label: "Plumbing",          href: "#pillars" },
+      { label: "Electrical",        href: "#pillars" },
+      { label: "Restoration",       href: "#pillars" },
+      { label: "Solar",             href: "#pillars" },
     ],
   },
   {
     heading: "Company",
     links: [
-      { label: "Book an audit",     href: "#get-started" },
-      { label: "Get in touch",      href: "mailto:hello@zephlyn.io" },
-      { label: "Trust & security",  href: "#faq" },
+      { label: "Get in touch",      href: "mailto:social@zephlyn.io" },
     ],
   },
 ];
@@ -86,15 +83,10 @@ export function OversizedFooter() {
             </h2>
           </div>
           <a
-            href="#get-started"
+            href="mailto:social@zephlyn.io"
             className="inline-flex items-center gap-2 self-start md:self-end font-mono text-[12px] uppercase tracking-[0.18em] text-foreground hover:text-primary transition-colors"
           >
-            <span
-              className="inline-block size-1.5 rounded-full bg-[var(--zeph-success-500)]"
-              style={{ animation: "liveDot 1.6s ease-in-out infinite" }}
-              aria-hidden
-            />
-            Book a free workflow audit
+            Get in touch
             <span aria-hidden>↗</span>
           </a>
         </div>
@@ -111,7 +103,7 @@ export function OversizedFooter() {
               </li>
               <li>
                 <a href="#pillars" className="link-underline text-muted-foreground hover:text-foreground transition-colors">
-                  Six pillars
+                  Where we start
                 </a>
               </li>
               <li>
@@ -149,9 +141,13 @@ export function OversizedFooter() {
           className="select-none pointer-events-none mt-4 mb-10 overflow-hidden"
         >
           <h2
+            // clamp min dropped from 80 → 48 so the wordmark stays within
+            // a 375px viewport. At ~60px (16vw of 375px) "Zephlyn." fits
+            // comfortably; at desktop widths the 260px max still anchors
+            // the footer.
             className={cn(
               "font-display font-bold tracking-[-0.06em]",
-              "text-[clamp(80px,18vw,260px)] leading-[0.85]",
+              "text-[clamp(48px,16vw,260px)] leading-[0.85]",
               "bg-clip-text text-transparent",
               "bg-gradient-to-b from-foreground/85 to-foreground/15"
             )}

@@ -139,33 +139,22 @@ type ArtifactKind =
 const ARTIFACTS: Array<{
   id: string;
   kind: ArtifactKind;
-  app: string;       // app/channel name on the notification chrome
-  title: string;     // bold notification title
-  body: string;      // notification body line
-  age: string;       // "12 min ago"
-  severity: "lost" | "slipping" | "stale";
+  app: string;       // channel name shown on the card chrome
+  title: string;     // headline
+  body: string;      // description line
 }> = [
-  { id: "n1", kind: "missed-call",   app: "Phone",         title: "Missed call — (617) 555-0142",     body: "Rang 5×. No voicemail. Caller went silent.",        age: "4 min ago",  severity: "lost"     },
-  { id: "n2", kind: "voicemail",     app: "Voicemail",     title: "New voicemail · 0:42",              body: '"…hi looking for a quote on a water heater—"',     age: "11 min ago", severity: "lost"     },
-  { id: "n3", kind: "google",        app: "Google Ads",    title: "Lead form — AC install",            body: "Brookline, MA. Submitted to ads inbox.",            age: "12 min ago", severity: "lost"     },
-  { id: "n4", kind: "facebook",      app: "Facebook",      title: "Lead ad — Roof inspection",         body: "South-side homeowner. Sitting in Meta inbox.",      age: "27 min ago", severity: "slipping" },
-  { id: "n5", kind: "sms",           app: "Messages",      title: '"is anyone there?"',                body: "Customer replied to your blast. Seen, no answer.",  age: "8 min ago",  severity: "lost"     },
-  { id: "n6", kind: "form",          app: "Website",       title: "Quote request — water heater",      body: "name@gmail.com · 33 minutes waiting.",              age: "33 min ago", severity: "slipping" },
-  { id: "n7", kind: "angi",          app: "Angi",          title: "Furnace repair lead",               body: "Claim window closes in 4 min. Still un-claimed.",   age: "19 min ago", severity: "slipping" },
-  { id: "n8", kind: "past-customer", app: "Past customer", title: "12-month follow-up — never sent",   body: "Jane Carlson · last job Apr 2025.",                 age: "5 days ago", severity: "stale"    },
-  { id: "n9", kind: "review",        app: "Reviews",       title: "Post-job review ask — skipped",     body: "Job #1247 · closed Tuesday · no ask sent.",         age: "3 days ago", severity: "stale"    },
-  { id: "n10", kind: "referral",     app: "Referral",      title: "Neighbor of job #842",              body: "Spotted your truck. Asked your tech. Nobody followed up.", age: "41 min ago", severity: "slipping" },
-  { id: "n11", kind: "estimate",     app: "Estimate sent", title: "$8.4k quote — no follow-up",        body: "Sent Tuesday. No second touch. Likely cold.",       age: "16 hr ago",  severity: "lost"     },
+  { id: "n1",  kind: "missed-call",   app: "Phone",         title: "Missed calls",              body: "Voicemail, after-hours rings, the line nobody picked up." },
+  { id: "n2",  kind: "voicemail",     app: "Voicemail",     title: "Voicemails",                body: "Played late or never. The lead has already moved on." },
+  { id: "n3",  kind: "google",        app: "Google Ads",    title: "Google Ads leads",          body: "Lead-form drops that arrive at an inbox nobody owns." },
+  { id: "n4",  kind: "facebook",      app: "Facebook",      title: "Meta lead ads",             body: "Sit inside Facebook Business Manager until somebody logs in." },
+  { id: "n5",  kind: "sms",           app: "Messages",      title: "Text replies",              body: "Customer texts to the business line — and back to who?" },
+  { id: "n6",  kind: "form",          app: "Website",       title: "Website forms",             body: "Quote requests routed to a shared inbox, then forgotten." },
+  { id: "n7",  kind: "angi",          app: "Angi",          title: "Angi / marketplace leads",  body: "Claim windows, lead-share fees, a separate dashboard." },
+  { id: "n8",  kind: "past-customer", app: "Past customer", title: "Past-customer follow-ups",  body: "Annual checkups, warranty calls, repeat-job reminders." },
+  { id: "n9",  kind: "review",        app: "Reviews",       title: "Post-job review asks",      body: "A reminder somebody has to remember to send." },
+  { id: "n10", kind: "referral",      app: "Referral",      title: "Word-of-mouth referrals",   body: "Neighbor flags the truck; the lead lives in a tech's head." },
+  { id: "n11", kind: "estimate",      app: "Estimate sent", title: "Open estimates",            body: "Quote sent, then nothing — until the customer goes cold." },
 ];
-
-const SEVERITY_TONE: Record<
-  "lost" | "slipping" | "stale",
-  { label: string; color: string; pill: string }
-> = {
-  lost:     { label: "LOST",     color: "var(--zeph-danger-500)",  pill: "color-mix(in srgb, var(--zeph-danger-500) 14%, transparent)"  },
-  slipping: { label: "SLIPPING", color: "var(--zeph-warning-500)", pill: "color-mix(in srgb, var(--zeph-warning-500) 14%, transparent)" },
-  stale:    { label: "STALE",    color: "var(--muted-foreground)", pill: "color-mix(in srgb, var(--muted-foreground) 14%, transparent)" },
-};
 
 function ArtifactIcon({ kind }: { kind: ArtifactKind }) {
   const common = {
@@ -263,105 +252,42 @@ function ArtifactIcon({ kind }: { kind: ArtifactKind }) {
 
 export function DisconnectedFlow() {
   return (
-    <div className="w-full" role="img" aria-label="11 inbound leads, all sitting unanswered across your phone, inbox, and ad platforms">
-      {/* Toolbar — reads as a phone Notification Center summary */}
-      <div className="flex items-center justify-between mb-3 pb-3 border-b border-border">
-        <div className="flex items-center gap-3">
-          <span
-            className="type-overline font-mono"
-            style={{ color: "var(--primary)", letterSpacing: "0.18em" }}
-          >
-            TODAY · NOTIFICATIONS YOU MISSED
-          </span>
-          <span
-            className="text-xs font-mono px-2 py-0.5 rounded"
-            style={{
-              color: "var(--zeph-danger-500)",
-              background: "color-mix(in srgb, var(--zeph-danger-500) 12%, transparent)",
-            }}
-          >
-            11 UNREAD
-          </span>
-        </div>
-        <div className="flex items-center gap-3 text-[10px] font-mono uppercase tracking-[0.14em] text-muted-foreground">
-          <span className="flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full" style={{ background: "var(--zeph-danger-500)" }} />
-            Lost
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full" style={{ background: "var(--zeph-warning-500)" }} />
-            Slipping
-          </span>
-          <span className="flex items-center gap-1.5">
-            <span className="size-1.5 rounded-full" style={{ background: "var(--muted-foreground)" }} />
-            Stale
-          </span>
-        </div>
-      </div>
-
-      {/* Notification grid — each row reads like an iOS / Android push */}
+    <div className="w-full" role="img" aria-label="The 11 places a lead can land before it reaches your CRM">
+      {/* Card grid — visual taxonomy of inbound lead sources */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5">
-        {ARTIFACTS.map((n) => {
-          const tone = SEVERITY_TONE[n.severity];
-          return (
-            <article
-              key={n.id}
-              className="relative rounded-lg border border-border bg-card/85 p-3 flex flex-col gap-1.5 shadow-sm overflow-hidden"
-            >
-              {/* unread purple bar on the left edge */}
+        {ARTIFACTS.map((n) => (
+          <article
+            key={n.id}
+            className="relative rounded-lg border border-border bg-card/85 p-3 flex flex-col gap-1.5 shadow-sm overflow-hidden"
+          >
+            {/* Channel row — icon · channel name */}
+            <div className="flex items-center gap-2">
               <span
-                aria-hidden
-                className="absolute left-0 top-2 bottom-2 w-[3px] rounded-full"
-                style={{ background: tone.color, opacity: 0.85 }}
-              />
+                className="inline-flex items-center justify-center size-6 rounded-md shrink-0"
+                style={{
+                  color: "var(--primary)",
+                  background: "color-mix(in srgb, var(--primary) 14%, transparent)",
+                }}
+              >
+                <ArtifactIcon kind={n.kind} />
+              </span>
+              <span className="text-[10.5px] font-mono uppercase tracking-[0.1em] text-muted-foreground truncate flex-1">
+                {n.app}
+              </span>
+            </div>
 
-              {/* App row — icon · app name · timestamp */}
-              <div className="flex items-center gap-2 pl-1.5">
-                <span
-                  className="inline-flex items-center justify-center size-6 rounded-md shrink-0"
-                  style={{
-                    color: tone.color,
-                    background: tone.pill,
-                  }}
-                >
-                  <ArtifactIcon kind={n.kind} />
-                </span>
-                <span className="text-[10.5px] font-mono uppercase tracking-[0.1em] text-muted-foreground truncate flex-1">
-                  {n.app}
-                </span>
-                <span className="text-[10px] font-mono text-muted-foreground/85 shrink-0">
-                  {n.age}
-                </span>
-              </div>
+            {/* Title */}
+            <p className="text-[12.5px] leading-snug text-foreground font-semibold line-clamp-2">
+              {n.title}
+            </p>
 
-              {/* Notification title — bold, like a push */}
-              <p className="pl-1.5 text-[12.5px] leading-snug text-foreground font-semibold line-clamp-2">
-                {n.title}
-              </p>
-
-              {/* Notification body — preview text */}
-              <p className="pl-1.5 text-[11.5px] leading-snug text-muted-foreground line-clamp-2">
-                {n.body}
-              </p>
-
-              {/* Severity pill */}
-              <div className="pl-1.5 pt-0.5">
-                <span
-                  className="inline-block text-[9.5px] font-mono font-semibold px-1.5 py-0.5 rounded tracking-[0.12em]"
-                  style={{ color: tone.color, background: tone.pill }}
-                >
-                  {tone.label}
-                </span>
-              </div>
-            </article>
-          );
-        })}
+            {/* Body */}
+            <p className="text-[11.5px] leading-snug text-muted-foreground line-clamp-2">
+              {n.body}
+            </p>
+          </article>
+        ))}
       </div>
-
-      {/* Footer summary */}
-      <p className="mt-4 text-center text-[11px] font-mono text-muted-foreground tracking-wider">
-        11 NOTIFICATIONS · 0 ANSWERED · EVERY ONE WAS A JOB
-      </p>
     </div>
   );
 }

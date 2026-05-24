@@ -23,11 +23,24 @@ export function WorkflowScene() {
         </h2>
       </div>
 
-      <DashboardChrome
-        pill="Workflow · Lead → Booked Job"
-        label="V4.2 · 38MS · LIVE"
-      >
-        <ConnectedFlow />
+      <DashboardChrome pill="Workflow · Lead → Booked Job">
+        {/* On narrow viewports the 700px-wide SVG would shrink labels into
+            unreadability. Wrap in a horizontal-scroll container with a
+            preserved min-width and a soft fade hint on the right edge so
+            mobile users know it scrolls. */}
+        <div
+          className="relative -mx-1 sm:mx-0 overflow-x-auto"
+          style={{
+            WebkitMaskImage:
+              "linear-gradient(to right, black 0%, black 92%, transparent 100%)",
+            maskImage:
+              "linear-gradient(to right, black 0%, black 92%, transparent 100%)",
+          }}
+        >
+          <div className="min-w-[640px] px-1 sm:min-w-0 sm:px-0">
+            <ConnectedFlow />
+          </div>
+        </div>
       </DashboardChrome>
     </div>
   );

@@ -107,3 +107,24 @@ export const SCENE_LABELS = [
   "Tools",
   "Audit",
 ] as const;
+
+/**
+ * Constellation cinematic — per-scene star + line registries.
+ *
+ * Each scene declares which stars and lines are visible while it's
+ * active. The actual definitions live in
+ * `components/scene/constellation/stars.ts` and `lines.ts`.
+ *
+ * Empty by default in the foundation pass — the SIGNAL hero brief
+ * will populate index 0 first, then subsequent scene briefs fill
+ * in 1–6. Adding ids that don't exist in the registries silently
+ * skips rendering; line endpoints not in `activeStars` are dropped.
+ */
+export type SceneConstellation = {
+  activeStars: string[];
+  activeLines: string[];
+};
+
+export const SCENE_CONSTELLATIONS: SceneConstellation[] = SCENE_LABELS.map(
+  () => ({ activeStars: [], activeLines: [] })
+);

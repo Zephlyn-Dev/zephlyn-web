@@ -8,8 +8,8 @@
  * left-side swirl — so the line has visual rhythm instead of being a
  * dead ruler.
  *
- * Section behaviour: the line starts drawing at the SampleWorkflowPicker
- * (#sample-workflow) and finishes at the final CTA (#get-started). Each
+ * Section behaviour: the line starts drawing at the SixPillars section
+ * (#pillars) and finishes at the final contact CTA (#get-started). Each
  * intermediate section places a small marker on the path; markers
  * brighten once the reader scrolls past them, so the line reads as a
  * journey through the page's stops.
@@ -29,12 +29,9 @@ const W = 56;
 // Section anchors the line walks through, in scroll order. The line
 // starts at the first id and ends at the last.
 const SECTION_IDS = [
-  "sample-workflow",
   "pillars",
+  "qualifier",
   "why",
-  "compare",
-  "roi",
-  "pricing",
   "faq",
   "get-started",
 ] as const;

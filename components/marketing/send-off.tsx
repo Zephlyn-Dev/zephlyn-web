@@ -112,7 +112,11 @@ export function SendOff() {
 
         <h2
           id="sendoff-heading"
-          className="font-display font-bold tracking-[-0.045em] leading-[0.95] text-[clamp(54px,10vw,160px)]"
+          // clamp min lowered from 54 → 36 so "Cleaner handoffs." fits a
+          // single 375px viewport line without breaking mid-word.
+          // text-balance does the rest — modern browsers split before "handoffs"
+          // rather than inside it.
+          className="font-display font-bold tracking-[-0.045em] leading-[0.95] text-[clamp(36px,10vw,160px)] [text-wrap:balance] [word-break:keep-all] [hyphens:none]"
         >
           {LINES.map((ln) => (
             <span
@@ -125,9 +129,13 @@ export function SendOff() {
           ))}
         </h2>
 
-        <p className="type-body-lg text-muted-foreground max-w-[44ch] mx-auto mt-12">
-          A productized automation service for HVAC, roofing, plumbing,
-          electrical, restoration, and solar shops.
+        <p className="type-body-lg text-foreground/85 max-w-[48ch] mx-auto mt-12">
+          We help businesses simplify operations, save time, and grow
+          through automation.
+        </p>
+        <p className="type-caption text-muted-foreground/80 max-w-[44ch] mx-auto mt-3 tracking-[0.04em]">
+          Starting with HVAC, roofing, plumbing, electrical, restoration,
+          and solar shops.
         </p>
       </div>
     </section>

@@ -4,32 +4,41 @@ import * as React from "react";
 import { BootScreen } from "@/components/marketing/boot-screen";
 import { CinematicScene } from "@/components/scene/cinematic-scene";
 import { SceneOverlay } from "@/components/scene/scene-overlay";
-import { ReducedMotionLanding } from "@/components/reduced-motion-landing";
+import { StaticLanding } from "@/components/static-landing";
 import { useTheme } from "@/components/theme-provider";
 
-function useReducedMotion() {
-  const [reduce, setReduce] = React.useState(false);
+/**
+ * Returns true when we should serve the static (linear) layout instead of
+ * the scroll-driven 3D cinematic. Two conditions trigger it:
+ *   1. The user prefers reduced motion (accessibility)
+ *   2. The viewport is under 768px (mobile — the cinematic relies on
+ *      landscape framing and degrades catastrophically in portrait)
+ *
+ * Watches both for changes so a viewport resize or OS-level motion-pref
+ * change flips the layout live.
+ */
+function useStaticLayout() {
+  const [isStatic, setIsStatic] = React.useState(false);
   React.useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduce(mq.matches);
-    const onChange = () => setReduce(mq.matches);
+    const mq = window.matchMedia(
+      "(prefers-reduced-motion: reduce), (max-width: 767px)"
+    );
+    setIsStatic(mq.matches);
+    const onChange = (e: MediaQueryListEvent) => setIsStatic(e.matches);
     mq.addEventListener("change", onChange);
     return () => mq.removeEventListener("change", onChange);
   }, []);
-  return reduce;
+  return isStatic;
 }
 
 export function LandingExperience() {
   const proxyRef = React.useRef<HTMLDivElement>(null);
   const { resolvedTheme } = useTheme();
   const mode = resolvedTheme === "dark" ? "dark" : "light";
-  const reduceMotion = useReducedMotion();
+  const isStatic = useStaticLayout();
 
-  // Accessibility: skip the 360vh scroll-driven 3D cinematic when the user
-  // has prefers-reduced-motion. Stack the same scene content as plain
-  // sections so the narrative is still readable.
-  if (reduceMotion) {
-    return <ReducedMotionLanding />;
+  if (isStatic) {
+    return <StaticLanding />;
   }
 
   return (

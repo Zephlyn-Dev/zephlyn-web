@@ -23,32 +23,6 @@ const GROUPS: Array<{ title: string; tools: string[] }> = [
   },
 ];
 
-const SERVICES: Array<{
-  eyebrow: string;
-  title: string;
-  body: string;
-  meta: string;
-}> = [
-  {
-    eyebrow: "Audit",
-    title: "Workflow audit",
-    body: "Map current ops, find the 3 workflows that hurt most.",
-    meta: "2-week sprint",
-  },
-  {
-    eyebrow: "Buildout",
-    title: "Workflow buildout",
-    body: "3 workflows live, wired into your stack, documented.",
-    meta: "3-week sprint",
-  },
-  {
-    eyebrow: "Support",
-    title: "Ongoing support",
-    body: "Fixes, new automations, monthly check-in on outcomes.",
-    meta: "Month-to-month",
-  },
-];
-
 function ToolTile({ name }: { name: string }) {
   const initials = name
     .split(/\s+/)
@@ -80,10 +54,7 @@ export function ToolsScene() {
         </h2>
       </div>
 
-      <DashboardChrome
-        pill="Integrations · 180+ connectors"
-        label="3 GROUPS · 18 TOOLS · 3 SERVICES"
-      >
+      <DashboardChrome pill="Integrations · Common tools">
         <div className="flex flex-col gap-3">
           {GROUPS.map((g) => (
             <div key={g.title}>
@@ -97,27 +68,6 @@ export function ToolsScene() {
               </div>
             </div>
           ))}
-
-          {/* Services strip */}
-          <div className="border-t border-border pt-3 mt-1 grid grid-cols-1 md:grid-cols-3 gap-2">
-            {SERVICES.map((s) => (
-              <div
-                key={s.title}
-                className="rounded-md border border-border bg-background p-3 flex flex-col gap-1"
-              >
-                <p className="type-overline text-primary text-[9px]">{s.eyebrow}</p>
-                <h3 className="text-[13px] font-semibold text-foreground tracking-[-0.005em]">
-                  {s.title}
-                </h3>
-                <p className="text-[11px] leading-[1.45] text-muted-foreground">
-                  {s.body}
-                </p>
-                <span className="mt-auto pt-1 font-mono text-[9px] tracking-[0.14em] text-muted-foreground">
-                  {s.meta}
-                </span>
-              </div>
-            ))}
-          </div>
         </div>
       </DashboardChrome>
     </div>

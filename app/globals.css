@@ -58,6 +58,16 @@
 
   /* radius alias used by shadcn/ui */
   --radius:                var(--zeph-radius-md);
+
+  /* Constellation cinematic — light theme.
+     Read by components/scene/constellation/. The starfield uses these
+     directly (no Tailwind utility passthrough) so theme parity stays
+     a single source of truth. */
+  --constellation-bg-from:   #FAFAF8;
+  --constellation-bg-to:     #F0EEEA;
+  --constellation-star:      #1E1B4B;
+  --constellation-star-glow: #4338CA;
+  --constellation-line:      var(--primary);
 }
 
 /* ============================================================
@@ -101,6 +111,15 @@
 
   --info:                  var(--zeph-info-300);
   --info-foreground:       var(--zeph-ink);
+
+  /* Constellation cinematic — dark theme. Stars are warm-white so the
+     starfield reads like a night-sky photo, not phosphor. Line color
+     stays brand purple in both themes — the one through-line. */
+  --constellation-bg-from:   #0A0A0F;
+  --constellation-bg-to:     #050507;
+  --constellation-star:      #F8F4E8;
+  --constellation-star-glow: #FFFFFF;
+  --constellation-line:      var(--primary);
 }
 
 /* ============================================================
@@ -577,42 +596,6 @@
     animation-delay:    0s !important;
   }
 }
-
-/* ============================================================
-   6.10. Scroll-spy active nav link
-   data-active="true" is set by components/animations/section-spy.tsx
-   on whichever header link points at the section currently most-in-
-   view. Pairs with .link-underline — when active, the underline
-   stays fully drawn even without hover.
-   ============================================================ */
-.nav-spy-link {
-  position: relative;
-}
-.nav-spy-link[data-active="true"] {
-  color: var(--foreground);
-}
-.nav-spy-link[data-active="true"]::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom: -6px;
-  height: 1.5px;
-  background: linear-gradient(
-    90deg,
-    color-mix(in srgb, var(--primary) 0%, transparent),
-    var(--primary) 50%,
-    color-mix(in srgb, var(--primary) 0%, transparent)
-  );
-  opacity: 0.9;
-  border-radius: 1px;
-  animation: nav-spy-fade-in 280ms ease-out;
-}
-@keyframes nav-spy-fade-in {
-  from { opacity: 0; transform: scaleX(0.4); }
-  to   { opacity: 0.9; transform: scaleX(1); }
-}
-
 
 /* ============================================================
    6.6.  Live-dot pulse — small green status indicators

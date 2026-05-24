@@ -13,9 +13,9 @@
 import { Container, Section } from "@/components/ui/container";
 
 const FOR_ITEMS: string[] = [
-  "You run a $1M–$15M home-service business — HVAC, roofing, plumbing, electrical, or restoration.",
-  "You're already on ServiceTitan, Jobber, Housecall Pro, or a similar field-service / CRM stack.",
-  "Your team is losing leads because dispatch is drowning in admin and the phone rings faster than people can pick up.",
+  "You run a home-service shop and admin work is starting to slow the business down.",
+  "You're already on a CRM or field-service tool — ServiceTitan, Jobber, Housecall Pro, or similar.",
+  "Leads are coming in faster than your team can answer them, and handoffs between sales, scheduling, and ops are getting messy.",
   "You want workflows that run on the tools you already pay for — not a new platform to learn.",
 ];
 
@@ -79,7 +79,7 @@ export function Qualifier() {
           line, drawn before the call.
         </p>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-5">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-5">
           {/* —— FOR —— */}
           <article className="shimmer-border rounded-2xl border border-[var(--zeph-success-500)]/30 bg-card/85 p-7 flex flex-col gap-4 transition-transform duration-300 hover:-translate-y-0.5">
             <header className="flex items-center gap-2.5">

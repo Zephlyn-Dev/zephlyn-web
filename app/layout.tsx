@@ -15,20 +15,21 @@ import "./globals.css";
  */
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://zephlyn.ai"),
+  metadataBase: new URL("https://zephlyn.io"),
   title: {
     default: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
     template: "%s · Zephlyn",
   },
   description:
-    "Zephlyn is an automation service for HVAC, roofing, plumbing, electrical, restoration, and solar businesses. Productized workflows with recurring support — lead capture, scheduling, estimates, ops handoffs.",
+    "Automation for home service shops drowning in admin work — so leads get answered, estimates move, and sold jobs reach ops cleanly.",
   applicationName: "Zephlyn",
   keywords: [
-    "AI automation",
+    "automation",
     "workflow automation",
-    "service business",
+    "home service",
+    "HVAC",
+    "field service",
     "ops",
-    "SaaS",
     "Zephlyn",
   ],
   authors: [{ name: "Zephlyn" }],
@@ -39,16 +40,24 @@ export const metadata: Metadata = {
     siteName: "Zephlyn",
     title: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
     description:
-      "Productized automation for HVAC, roofing, plumbing, electrical, restoration, and solar. Built on your stack, with recurring support.",
-    url: "https://zephlyn.ai",
-    images: [{ url: "/brand/social/og-image.svg", width: 1200, height: 630 }],
+      "Automation for home service shops drowning in admin work — so leads get answered, estimates move, and sold jobs reach ops cleanly.",
+    url: "https://zephlyn.io",
+    locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
     description:
-      "Productized automation for HVAC, roofing, plumbing, electrical, restoration, and solar.",
-    images: ["/brand/social/og-image.svg"],
+      "Automation for home service shops drowning in admin work.",
+    images: ["/og-image.png"],
   },
   icons: {
     icon: [

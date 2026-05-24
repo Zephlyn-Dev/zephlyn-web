@@ -12,11 +12,14 @@ import { EffectComposer, Bloom } from "@react-three/postprocessing";
 import * as THREE from "three";
 import {
   useScrollProgress,
-  lerp,
   smoothstep,
   clamp,
 } from "./use-scroll-progress";
-import { CAMERA_PATH, STAGE_RANGES } from "./scene-config";
+import { STAGE_RANGES, SCENE_CONSTELLATIONS, UI_SCENES } from "./scene-config";
+import { sampleCameraPath } from "./camera-path";
+import { StarField as ConstellationStarField } from "./constellation/star-field";
+import { STARS } from "./constellation/stars";
+import { LINES } from "./constellation/lines";
 import { SCENE_THEMES, type SceneMode, type SceneTheme } from "./scene-theme";
 import {
   EchoMark3D,
@@ -32,36 +35,6 @@ type Props = {
   proxyRef: React.RefObject<HTMLElement | null>;
   mode: SceneMode;
 };
-
-const _pos = new THREE.Vector3();
-const _look = new THREE.Vector3();
-function sampleCameraPath(p: number) {
-  for (let i = 0; i < CAMERA_PATH.length - 1; i++) {
-    const a = CAMERA_PATH[i];
-    const b = CAMERA_PATH[i + 1];
-    if (p >= a.p && p <= b.p) {
-      const t = (p - a.p) / (b.p - a.p);
-      // Double smoothstep ("smootherstep") — zero second derivative at the
-      // keyframe boundaries, gives a buttery glide between waypoints.
-      const e = smoothstep(0, 1, smoothstep(0, 1, t));
-      _pos.set(
-        lerp(a.pos[0], b.pos[0], e),
-        lerp(a.pos[1], b.pos[1], e),
-        lerp(a.pos[2], b.pos[2], e)
-      );
-      _look.set(
-        lerp(a.look[0], b.look[0], e),
-        lerp(a.look[1], b.look[1], e),
-        lerp(a.look[2], b.look[2], e)
-      );
-      return { pos: _pos, look: _look, fov: lerp(a.fov, b.fov, e) };
-    }
-  }
-  const last = CAMERA_PATH[CAMERA_PATH.length - 1];
-  _pos.set(...last.pos);
-  _look.set(...last.look);
-  return { pos: _pos, look: _look, fov: last.fov };
-}
 
 const INNER_DIST = 3.6;
 const OUTER_DIST = 6.4;
@@ -378,7 +351,88 @@ function SceneInner({
   );
 }
 
-export function CinematicScene({ proxyRef, mode }: Props) {
+/* -------------------------------------------------------------- *
+ * Dev-flag toggle — `NEXT_PUBLIC_CONSTELLATION_PREVIEW=1` swaps the
+ * legacy 7-scene cinematic for the new constellation StarField.
+ * Defaults to legacy so prod ship-state is unchanged. The flag is
+ * baked at build time (Next reads NEXT_PUBLIC_ vars at compile);
+ * to preview locally:
+ *   NEXT_PUBLIC_CONSTELLATION_PREVIEW=1 npm run dev
+ * -------------------------------------------------------------- */
+const CONSTELLATION_PREVIEW =
+  process.env.NEXT_PUBLIC_CONSTELLATION_PREVIEW === "1";
+
+export function CinematicScene(props: Props) {
+  return CONSTELLATION_PREVIEW ? (
+    <ConstellationCinematic {...props} />
+  ) : (
+    <LegacyCinematic {...props} />
+  );
+}
+
+/* -------------------------------------------------------------- *
+ * Constellation preview — picks current scene from scroll progress
+ * and feeds the resolved active stars + lines into the StarField.
+ * Empty registries in the foundation pass mean this renders just
+ * the background field + camera path; per-scene briefs populate
+ * the registries and SCENE_CONSTELLATIONS to bring it to life.
+ * -------------------------------------------------------------- */
+
+function ConstellationCinematic({ proxyRef, mode }: Props) {
+  const { progressRef } = useScrollProgress(proxyRef);
+  const [sceneIdx, setSceneIdx] = React.useState(0);
+
+  React.useEffect(() => {
+    let raf = 0;
+    let last = -1;
+    const tick = () => {
+      const p = progressRef.current ?? 0;
+      let idx = 0;
+      for (let i = 0; i < UI_SCENES.length; i++) {
+        if (p >= UI_SCENES[i][0] && p < UI_SCENES[i][1]) {
+          idx = i;
+          break;
+        }
+        if (i === UI_SCENES.length - 1 && p >= UI_SCENES[i][0]) idx = i;
+      }
+      if (idx !== last) {
+        last = idx;
+        setSceneIdx(idx);
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [progressRef]);
+
+  const cfg = SCENE_CONSTELLATIONS[sceneIdx] ?? {
+    activeStars: [],
+    activeLines: [],
+  };
+  const activeStars = cfg.activeStars
+    .map((id) => STARS[id])
+    .filter(Boolean);
+  const activeLines = cfg.activeLines
+    .map((id) => LINES[id])
+    .filter(Boolean);
+
+  return (
+    <ConstellationStarField
+      proxyRef={proxyRef}
+      theme={mode}
+      activeStars={activeStars}
+      activeLines={activeLines}
+    />
+  );
+}
+
+/* -------------------------------------------------------------- *
+ * Legacy 7-scene cinematic — unchanged. Kept verbatim during the
+ * transition so the production page stays exactly as it is until
+ * the constellation rebuild ships scene-by-scene.
+ * -------------------------------------------------------------- */
+
+function LegacyCinematic({ proxyRef, mode }: Props) {
   const { progressRef } = useScrollProgress(proxyRef);
   const theme = SCENE_THEMES[mode];
   return (
@@ -395,6 +449,7 @@ export function CinematicScene({ proxyRef, mode }: Props) {
         position: "fixed",
         inset: 0,
         zIndex: 0,
+        pointerEvents: "none",
         background: theme.canvasBg,
       }}
       aria-hidden

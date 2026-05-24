@@ -9,12 +9,15 @@ import { cn } from "@/lib/cn";
 
 type Props = {
   pill: string;
-  label: string;
+  /** Optional right-side mono label. Omit to hide. */
+  label?: string;
+  /** Show the pulsing green dot next to the pill. Defaults to false — only enable for true real-time surfaces. */
+  live?: boolean;
   children: React.ReactNode;
   className?: string;
 };
 
-export function DashboardChrome({ pill, label, children, className }: Props) {
+export function DashboardChrome({ pill, label, live = false, children, className }: Props) {
   return (
     <div
       className={cn(
@@ -28,13 +31,17 @@ export function DashboardChrome({ pill, label, children, className }: Props) {
     >
       <header className="flex items-center justify-between px-5 py-3 border-b border-border bg-muted/30">
         <div className="hidden sm:flex items-center gap-2 type-overline">
-          <span
-            className="size-1.5 rounded-full bg-[var(--zeph-success-500)]"
-            style={{ animation: "liveDot 1.6s ease-in-out infinite" }}
-          />
+          {live && (
+            <span
+              className="size-1.5 rounded-full bg-[var(--zeph-success-500)]"
+              style={{ animation: "liveDot 1.6s ease-in-out infinite" }}
+            />
+          )}
           <span className="text-foreground/80">{pill}</span>
         </div>
-        <span className="type-overline text-muted-foreground font-mono">{label}</span>
+        {label && (
+          <span className="type-overline text-muted-foreground font-mono">{label}</span>
+        )}
       </header>
       <div className="p-5 sm:p-6">{children}</div>
     </div>

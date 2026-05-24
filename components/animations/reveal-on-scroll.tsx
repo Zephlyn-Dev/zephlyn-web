@@ -2,7 +2,7 @@
 
 /**
  * <RevealOnScroll>
- *   <PricingTiers />
+ *   <SixPillars />
  * </RevealOnScroll>
  *
  * Drop-in client wrapper. Automatically discovers the first <h2> inside

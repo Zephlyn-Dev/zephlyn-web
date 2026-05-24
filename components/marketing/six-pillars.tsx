@@ -90,13 +90,7 @@ function ScrambleNumber({ value }: { value: string }) {
   return <span ref={ref}>{value}</span>;
 }
 
-type PillarIconName =
-  | "workflow"
-  | "calendar"
-  | "form"
-  | "shield"
-  | "boxes"
-  | "megaphone";
+type PillarIconName = "workflow" | "calendar" | "form";
 
 const PILLARS: Array<{
   n: string;
@@ -107,38 +101,20 @@ const PILLARS: Array<{
   {
     n: "01",
     title: "Workflow design",
-    body: "Map how work moves through the business. Remove the bottlenecks between systems, people, and the next step.",
+    body: "Map how work moves through the business. Find the bottlenecks between systems, people, and the next step.",
     icon: "workflow",
   },
   {
     n: "02",
     title: "Scheduling",
-    body: "Booking, confirmations, reminders, dispatch coordination, internal scheduling handoffs — automated end-to-end.",
+    body: "Booking, confirmations, reminders, dispatch coordination, and the internal handoffs that come with them.",
     icon: "calendar",
   },
   {
     n: "03",
-    title: "Form submission",
-    body: "Streamline intake from websites, forms, ads, and lead sources so the right info reaches the right system fast.",
+    title: "Lead intake",
+    body: "Routing inbound leads from websites, forms, ads, calls, and marketplaces so each one lands somewhere a person owns.",
     icon: "form",
-  },
-  {
-    n: "04",
-    title: "Data integrity",
-    body: "Cut duplicate records, broken handoffs, missing fields, and stale updates across CRMs and ops tools.",
-    icon: "shield",
-  },
-  {
-    n: "05",
-    title: "Inventory tracking",
-    body: "Keep equipment, materials, and job-related stock visible across workflows — before the morning rush.",
-    icon: "boxes",
-  },
-  {
-    n: "06",
-    title: "Marketing automation",
-    body: "Follow-up sequences, campaign workflows, retargeting support, review requests, repetitive marketing tasks.",
-    icon: "megaphone",
   },
 ];
 
@@ -178,40 +154,11 @@ function PillarIcon({ name }: { name: PillarIconName }) {
           <path d="M9 8h6M9 12h6M9 16h4" />
         </svg>
       );
-    case "shield":
-      return (
-        <svg {...common}>
-          <path d="M12 3.5l7 2.5v5.5c0 4-3 7.5-7 8.5-4-1-7-4.5-7-8.5V6l7-2.5z" />
-          <path d="M9 12l2.2 2.2L15 10.5" />
-        </svg>
-      );
-    case "boxes":
-      return (
-        <svg {...common}>
-          <rect x="3.5" y="11" width="7" height="9" rx="1" />
-          <rect x="13.5" y="11" width="7" height="9" rx="1" />
-          <rect x="8.5" y="3.5" width="7" height="7.5" rx="1" />
-        </svg>
-      );
-    case "megaphone":
-      return (
-        <svg {...common}>
-          <path d="M4 10v4l11 5V5L4 10z" />
-          <path d="M15 9a3 3 0 0 1 0 6" />
-        </svg>
-      );
   }
 }
 
 export function SixPillars() {
-  const layout = [
-    { ...PILLARS[0], span: 2 },
-    { ...PILLARS[1], span: 1 },
-    { ...PILLARS[2], span: 1 },
-    { ...PILLARS[3], span: 1 },
-    { ...PILLARS[4], span: 1 },
-    { ...PILLARS[5], span: 2 },
-  ];
+  const layout = PILLARS.map((p) => ({ ...p, span: 1 }));
 
   const rootRef = React.useRef<HTMLDivElement>(null);
 
@@ -227,20 +174,29 @@ export function SixPillars() {
           desktop:
             "(prefers-reduced-motion: no-preference) and (min-width: 1024px)",
           tablet:
-            "(prefers-reduced-motion: no-preference) and (max-width: 1023px)",
+            "(prefers-reduced-motion: no-preference) and (min-width: 768px) and (max-width: 1023px)",
+          mobile:
+            "(prefers-reduced-motion: no-preference) and (max-width: 767px)",
           reduce: "(prefers-reduced-motion: reduce)",
         },
         (ctx) => {
-          const { desktop, tablet, reduce } = ctx.conditions as {
+          const { desktop, tablet, mobile, reduce } = ctx.conditions as {
             desktop: boolean;
             tablet: boolean;
+            mobile: boolean;
             reduce: boolean;
           };
 
           const cards = root.querySelectorAll<HTMLElement>("[data-pillar]");
           if (!cards.length) return;
 
-          if (reduce) {
+          // Mobile + reduced-motion: skip the scroll-triggered fade entirely.
+          // Cards rely on the GSAP `from` to interpolate opacity:0 → 1, which
+          // can leave them invisible on mobile if ScrollTrigger fires before
+          // layout settles (the bug visible in the original mobile screenshots).
+          // On the static-landing path the page is short enough that a fade
+          // adds nothing — keep the cards visible from first paint.
+          if (reduce || mobile) {
             gsap.set(cards, { opacity: 1, scale: 1, y: 0, rotate: 0 });
             return;
           }
@@ -277,14 +233,8 @@ export function SixPillars() {
           //     refresh past the boot screen.
           //  2) fromTo is explicit about both endpoints so even a
           //     refresh-race lands cards at their final visible state.
-          // The two-wave delay (top row first, bottom row second) is
-          // preserved by staggering across all 6 cards and giving the
-          // bottom row a slightly longer delay.
-          const topRow = Array.from(cards).slice(0, 3);
-          const bottomRow = Array.from(cards).slice(3);
-
           gsap.fromTo(
-            topRow,
+            cards,
             { y: 70, scale: 0.78, opacity: 0, rotate: -3 },
             {
               y: 0,
@@ -293,28 +243,7 @@ export function SixPillars() {
               rotate: 0,
               duration: 0.8,
               ease: "power3.out",
-              stagger: 0.08,
-              clearProps: "transform",
-              scrollTrigger: {
-                trigger: root,
-                start: "top 80%",
-                toggleActions: "play none none none",
-                invalidateOnRefresh: true,
-              },
-            }
-          );
-          gsap.fromTo(
-            bottomRow,
-            { y: 70, scale: 0.78, opacity: 0, rotate: 3 },
-            {
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              rotate: 0,
-              duration: 0.8,
-              ease: "power3.out",
-              stagger: 0.08,
-              delay: 0.2,
+              stagger: 0.1,
               clearProps: "transform",
               scrollTrigger: {
                 trigger: root,
@@ -370,19 +299,18 @@ export function SixPillars() {
       <Container>
         <p className="type-overline text-primary mb-4">What we automate</p>
         <h2 className="type-h2 text-foreground max-w-[22ch]">
-          Six pillars. One quietly running shop.
+          Where we start.
         </h2>
         <p className="type-body-lg text-muted-foreground mt-5 max-w-[64ch]">
-          Every workflow we build slots into one of these six. Pick the
-          three that hurt most today — that&apos;s where the pilot starts.
+          Three workflow families that show up in almost every shop we
+          talk to. This is where we&apos;d look first.
         </p>
 
         <div
           ref={rootRef}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-12"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12"
         >
           {layout.map((p) => {
-            const wide = p.span === 2;
             return (
               <div
                 key={p.n}
@@ -391,7 +319,6 @@ export function SixPillars() {
                   "group relative rounded-xl border border-border bg-card overflow-hidden",
                   "transition-all duration-300 ease-out",
                   "hover:border-primary/50 hover:-translate-y-1 hover:shadow-lg",
-                  wide ? "lg:col-span-2" : "lg:col-span-1",
                   "before:absolute before:inset-0 before:opacity-0 before:transition-opacity before:duration-500",
                   "before:bg-[radial-gradient(circle_at_var(--mx,50%)_var(--my,50%),rgba(124,58,237,0.10),transparent_60%)]",
                   "hover:before:opacity-100"
@@ -402,39 +329,27 @@ export function SixPillars() {
                   className={cn(
                     "absolute top-4 right-5 font-mono tabular-nums",
                     "text-muted-foreground/35 group-hover:text-primary/55 transition-colors",
-                    wide
-                      ? "text-[44px] leading-none tracking-[-0.03em]"
-                      : "text-[32px] leading-none tracking-[-0.03em]"
+                    "text-[32px] leading-none tracking-[-0.03em]"
                   )}
                 >
                   <ScrambleNumber value={p.n} />
                 </span>
 
-                <div className={cn("relative", wide ? "p-7" : "p-6")}>
+                <div className="relative p-6">
                   <div
                     data-pillar-icon
                     className={cn(
                       "rounded-[10px] grid place-items-center bg-accent text-accent-foreground mb-4",
                       "transition-transform duration-300 group-hover:scale-110",
-                      wide ? "size-12" : "size-10"
+                      "size-10"
                     )}
                   >
                     <PillarIcon name={p.icon} />
                   </div>
-                  <h3
-                    className={cn(
-                      "font-display font-semibold text-foreground tracking-[-0.02em]",
-                      wide ? "text-[22px] leading-[1.2]" : "text-[18px] leading-[1.25]"
-                    )}
-                  >
+                  <h3 className="font-display font-semibold text-foreground tracking-[-0.02em] text-[18px] leading-[1.25]">
                     {p.title}
                   </h3>
-                  <p
-                    className={cn(
-                      "text-muted-foreground mt-2 max-w-[44ch]",
-                      wide ? "type-body" : "type-body-sm"
-                    )}
-                  >
+                  <p className="text-muted-foreground mt-2 max-w-[44ch] type-body-sm">
                     {p.body}
                   </p>
                 </div>

@@ -1,20 +1,17 @@
 "use client";
 
 /**
- * Reduced-motion fallback — when prefers-reduced-motion is on, we skip the
- * 360vh scroll-driven 3D cinematic entirely and render the same content
- * as plain stacked sections. Each scene becomes a regular page section.
+ * Static landing — served to both mobile viewports (< 768px) and users with
+ * `prefers-reduced-motion: reduce`. Skips the 360vh scroll-driven 3D
+ * cinematic and renders the same narrative as plain stacked sections.
  *
- * Awwwards / accessibility judges actively grade this — a 7-scene R3F page
- * with no fallback loses 0.5-1 point on UX.
+ * Mirrors the cinematic's 7 scenes (Hero / Problem / Outcome / Workflow /
+ * Network / Tools / Contact) with the same copy. Keep in sync with
+ * components/scene/scene-overlay.tsx.
  */
 
 import * as React from "react";
-import Link from "next/link";
 import { Container, Section } from "@/components/ui/container";
-import { Button } from "@/components/ui/button";
-import { LiveTicker } from "@/components/marketing/live-ticker";
-import { PilotBar } from "@/components/marketing/pilot-bar";
 import { ProblemScene } from "@/components/marketing/problem-scene";
 import { WorkflowScene } from "@/components/marketing/workflow-scene";
 import { ToolsScene } from "@/components/marketing/tools-scene";
@@ -24,14 +21,14 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 function Headline({ children }: { children: React.ReactNode }) {
   return (
-    <h2 className="font-display font-semibold tracking-[-0.025em] text-foreground text-[clamp(36px,5vw,68px)] leading-[1.05] max-w-[20ch]">
+    <h2 className="font-display font-semibold tracking-[-0.025em] text-foreground text-[clamp(30px,5vw,68px)] leading-[1.08] max-w-[20ch] [text-wrap:balance] [word-break:keep-all]">
       {children}
     </h2>
   );
 }
 function Sub({ children }: { children: React.ReactNode }) {
   return (
-    <p className="type-body-lg text-muted-foreground mt-5 max-w-[58ch]">
+    <p className="type-body-lg text-muted-foreground mt-5 max-w-[58ch] [text-wrap:pretty]">
       {children}
     </p>
   );
@@ -44,7 +41,7 @@ function Grad({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function ReducedMotionLanding() {
+export function StaticLanding() {
   return (
     <main className="relative z-20 bg-background">
       {/* Scene 1 — Hero */}
@@ -55,32 +52,18 @@ export function ReducedMotionLanding() {
             Less admin. <Grad>Faster jobs. Cleaner handoffs.</Grad>
           </Headline>
           <Sub>
-            We build automation systems for HVAC, roofing, plumbing,
-            electrical, restoration, and solar — so leads get answered,
-            estimates move, and sold work hits ops without anyone retyping
-            anything.
+            Automation for home service shops drowning in admin work —
+            so leads get answered, estimates move, and sold jobs reach
+            ops cleanly.
           </Sub>
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <Link
-              href="/sample-audit"
-              transitionTypes={["nav-forward"]}
-              className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-transparent text-foreground border border-border hover:bg-muted hover:border-purple-300 dark:hover:border-purple-700 transition"
-            >
-              See a sample audit
-            </Link>
             <a
-              href="#get-started"
+              href="mailto:social@zephlyn.io"
               className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 transition"
             >
-              Book the 30-min audit — lunch&apos;s on us
+              Get in touch
             </a>
           </div>
-          <p className="mt-3 type-caption text-muted-foreground/80">
-            If we can&apos;t find 3 workflows worth fixing in 30 minutes,
-            we&apos;ll send you a $25 DoorDash credit.
-          </p>
-          <LiveTicker className="mt-8" />
-          <PilotBar className="mt-12" />
         </Container>
       </Section>
 
@@ -100,11 +83,11 @@ export function ReducedMotionLanding() {
         <Container>
           <Eyebrow>The outcome</Eyebrow>
           <Headline>
-            Every lead caught. <Grad>Every job tracked.</Grad>
+            Every channel watched. <Grad>Every job moves.</Grad>
           </Headline>
           <Sub>
-            One system, watching every channel — and quietly firing the right
-            action the moment a signal arrives.
+            Lead intake, scheduling, estimates, and ops handoffs running
+            quietly in the background — on the tools you already use.
           </Sub>
         </Container>
       </Section>
@@ -125,13 +108,14 @@ export function ReducedMotionLanding() {
       {/* Scene 5 — Network */}
       <Section className="border-t border-border">
         <Container>
-          <Eyebrow>How it works</Eyebrow>
+          <Eyebrow>How we&apos;re built</Eyebrow>
           <Headline>
-            One node becomes <Grad>a network.</Grad>
+            A service today. <Grad>Software tomorrow.</Grad>
           </Headline>
           <Sub>
-            Workflows compose. Each automation knows about the others. Add a
-            new lead source and the whole system gets smarter.
+            We start as a productized automation service with recurring
+            support — fix workflows, learn what repeats across shops, and
+            turn the strongest pieces into software later.
           </Sub>
         </Container>
       </Section>
@@ -147,21 +131,28 @@ export function ReducedMotionLanding() {
         </Container>
       </Section>
 
-      {/* Scene 7 — Audit CTA */}
+      {/* Scene 7 — Contact */}
       <Section id="get-started" className="border-t border-border">
         <Container>
-          <Eyebrow>Get audit</Eyebrow>
+          <Eyebrow>Get in touch</Eyebrow>
           <Headline>
-            Book a free <Grad>workflow audit.</Grad>
+            Tell us <Grad>what&apos;s broken.</Grad>
           </Headline>
           <Sub>
-            30 minutes. We&apos;ll map the three workflows we&apos;d build
-            first for your business.
+            We&apos;re working with our first shops now. If your admin work
+            is slowing the business down, we want to hear about it — and
+            we&apos;ll be straight about whether we can help.
           </Sub>
-          <div className="mt-8">
-            <Button size="lg" type="button">
-              Book the 30-min audit — lunch&apos;s on us
-            </Button>
+          <div className="mt-8 flex flex-col items-start gap-3">
+            <a
+              href="mailto:social@zephlyn.io"
+              className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-7 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 transition"
+            >
+              Email us
+            </a>
+            <p className="type-caption text-muted-foreground font-mono">
+              social@zephlyn.io
+            </p>
           </div>
         </Container>
       </Section>

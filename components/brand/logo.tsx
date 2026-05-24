@@ -164,6 +164,7 @@ export function ZephlynLogo({
       {!iconOnly && (
         <ZephlynWordmark
           size={Math.round(size * (boxed ? 1.1 : 1.05))}
+          className="hidden md:inline-block"
         />
       )}
     </div>

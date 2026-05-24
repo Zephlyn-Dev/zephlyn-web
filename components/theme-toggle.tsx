@@ -1,8 +1,13 @@
 "use client";
 
 /**
- * Theme toggle — 2-state sun/moon pill matching the design references.
- * Active state has a purple circle background, inactive is just the icon.
+ * Theme toggle — single pill switch with a sliding thumb over two visible
+ * slots (sun · moon). Click anywhere on the track to toggle; click the
+ * inactive slot to switch directly to that mode.
+ *
+ * Preserves the View Transitions circular-wipe (Chrome 2025 pattern) so the
+ * theme swap stays cinematic. Falls back to an instant swap on browsers
+ * without `startViewTransition` and on prefers-reduced-motion.
  */
 
 import * as React from "react";
@@ -26,12 +31,6 @@ function Moon(props: React.SVGProps<SVGSVGElement>) {
   );
 }
 
-/**
- * Theme switch with View Transitions API — circular wipe expands from the
- * clicked button's coordinates (Chrome 2025 pattern, used by Vercel Ship 26
- * and Arc). Gracefully falls back to instant switch on unsupported browsers
- * and respects prefers-reduced-motion.
- */
 function startThemeTransition(
   apply: () => void,
   origin: { x: number; y: number }
@@ -70,51 +69,86 @@ function startThemeTransition(
   });
 }
 
+const SLOT_PX = 28; // matches the size-7 thumb / icon slot
+
 export function ThemeToggle({ className }: { className?: string }) {
   const { resolvedTheme, setTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
-  const options = [
-    { value: "light", Icon: Sun, label: "Light" },
-    { value: "dark", Icon: Moon, label: "Dark" },
-  ] as const;
+  const trackRef = React.useRef<HTMLButtonElement>(null);
+
+  const toggle = React.useCallback(
+    (next: "light" | "dark") => {
+      const el = trackRef.current;
+      if (!el) {
+        setTheme(next);
+        return;
+      }
+      const rect = el.getBoundingClientRect();
+      // Origin the wipe over the slot we're moving toward, so the
+      // transition reads as "expand outward from the destination."
+      const x =
+        next === "dark"
+          ? rect.right - SLOT_PX / 2 - 4
+          : rect.left + SLOT_PX / 2 + 4;
+      const y = rect.top + rect.height / 2;
+      startThemeTransition(() => setTheme(next), { x, y });
+    },
+    [setTheme]
+  );
+
   return (
-    <div
-      role="radiogroup"
-      aria-label="Theme"
+    <button
+      ref={trackRef}
+      type="button"
+      role="switch"
+      aria-checked={isDark}
+      aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
+      onClick={() => toggle(isDark ? "light" : "dark")}
+      onKeyDown={(e) => {
+        if (e.key === " " || e.key === "Enter") {
+          e.preventDefault();
+          toggle(isDark ? "light" : "dark");
+        }
+      }}
+      data-theme={isDark ? "dark" : "light"}
       className={cn(
-        "inline-flex items-center rounded-full border border-border bg-card/60 p-1",
+        "relative inline-flex items-center rounded-full border border-border bg-card/60 p-1",
+        "focus-visible:outline-none focus-visible:shadow-focus",
+        "cursor-pointer select-none",
         className
       )}
     >
-      {options.map(({ value, Icon, label }) => {
-        const selected = (value === "dark" && isDark) || (value === "light" && !isDark);
-        return (
-          <button
-            key={value}
-            type="button"
-            role="radio"
-            aria-checked={selected}
-            aria-label={label}
-            onClick={(e) => {
-              const rect = (e.currentTarget as HTMLButtonElement).getBoundingClientRect();
-              startThemeTransition(
-                () => setTheme(value),
-                { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2 }
-              );
-            }}
-            className={cn(
-              "inline-flex items-center justify-center size-7 rounded-full",
-              "transition-colors duration-150 ease-out",
-              "focus-visible:outline-none focus-visible:shadow-focus",
-              selected
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:text-foreground"
-            )}
-          >
-            <Icon aria-hidden />
-          </button>
-        );
-      })}
-    </div>
+      {/* Thumb — slides between the two slots */}
+      <span
+        aria-hidden
+        className={cn(
+          "absolute top-1 size-7 rounded-full bg-primary",
+          "transition-transform duration-150 ease-out",
+          "motion-reduce:transition-none",
+          isDark ? "translate-x-7" : "translate-x-0"
+        )}
+        style={{ left: "0.25rem" }}
+      />
+      {/* Sun slot */}
+      <span
+        aria-hidden
+        className={cn(
+          "relative z-10 inline-flex items-center justify-center size-7 rounded-full transition-colors duration-150",
+          isDark ? "text-muted-foreground" : "text-primary-foreground"
+        )}
+      >
+        <Sun />
+      </span>
+      {/* Moon slot */}
+      <span
+        aria-hidden
+        className={cn(
+          "relative z-10 inline-flex items-center justify-center size-7 rounded-full transition-colors duration-150",
+          isDark ? "text-primary-foreground" : "text-muted-foreground"
+        )}
+      >
+        <Moon />
+      </span>
+    </button>
   );
 }

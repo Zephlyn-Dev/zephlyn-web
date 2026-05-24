@@ -11,8 +11,6 @@
  */
 
 import * as React from "react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
 import {
   useScrollProgress,
   clamp,
@@ -22,8 +20,6 @@ import { cn } from "@/lib/cn";
 import { ProblemScene } from "@/components/marketing/problem-scene";
 import { WorkflowScene } from "@/components/marketing/workflow-scene";
 import { ToolsScene } from "@/components/marketing/tools-scene";
-import { LiveTicker } from "@/components/marketing/live-ticker";
-import { PilotBar } from "@/components/marketing/pilot-bar";
 
 type Props = {
   proxyRef: React.RefObject<HTMLElement | null>;
@@ -213,22 +209,23 @@ export function SceneOverlay({ proxyRef }: Props) {
             aria-current={sceneIdx === i || undefined}
             className="group relative grid place-items-center size-3 focus-visible:outline-none"
           >
+            {/* Dot — same size in all states. Color only changes:
+                muted (default) · foreground (hover) · primary (active). */}
             <span
               className={cn(
-                "block rounded-full transition-all duration-300 ease-out",
+                "block size-1.5 rounded-full transition-colors duration-150 ease-out",
                 sceneIdx === i
-                  ? "size-2 bg-primary"
-                  : "size-1.5 bg-foreground/50 group-hover:bg-foreground/85 group-focus-visible:bg-foreground/85"
+                  ? "bg-primary"
+                  : "bg-muted-foreground group-hover:bg-foreground group-focus-visible:bg-foreground"
               )}
             />
-            {/* Label PERSISTENTLY visible (dimmer when inactive) so users
-                don't have to hover to know which scene each dot represents. */}
+            {/* Label persistently visible. Color carries state, no underline. */}
             <span
               className={cn(
-                "absolute right-full mr-3 whitespace-nowrap type-overline transition-all duration-200",
+                "absolute right-full mr-3 whitespace-nowrap type-overline transition-colors duration-150",
                 sceneIdx === i
-                  ? "opacity-100 translate-x-0 text-foreground"
-                  : "opacity-55 -translate-x-0 text-foreground/70 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  ? "text-primary"
+                  : "text-muted-foreground group-hover:text-foreground group-focus-visible:text-foreground"
               )}
             >
               {label}
@@ -251,32 +248,18 @@ export function SceneOverlay({ proxyRef }: Props) {
             Less admin. <Grad>Faster jobs. Cleaner handoffs.</Grad>
           </Headline>
           <Sub>
-            We build automation systems for HVAC, roofing, plumbing,
-            electrical, restoration, and solar — so leads get answered,
-            estimates move, and sold work hits ops without anyone retyping
-            anything.
+            Automation for home service shops drowning in admin work —
+            so leads get answered, estimates move, and sold jobs reach
+            ops cleanly.
           </Sub>
           <div className="mt-10 flex flex-wrap items-center gap-3 pointer-events-auto justify-center">
-            <Link
-              href="/sample-audit"
-              transitionTypes={["nav-forward"]}
-              className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-transparent text-foreground border border-border hover:bg-muted hover:border-purple-300 dark:hover:border-purple-700 transition-[background,color,box-shadow,transform] duration-150 ease-out"
-            >
-              See a sample audit
-            </Link>
             <a
-              href="#get-started"
+              href="mailto:social@zephlyn.io"
               className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-6 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 active:bg-purple-900 active:scale-[0.98] transition-[background,color,box-shadow,transform] duration-150 ease-out"
             >
-              Book the 30-min audit — lunch&apos;s on us
+              Get in touch
             </a>
           </div>
-          <p className="mt-3 text-[11px] tracking-[0.04em] text-muted-foreground/80">
-            If we can&apos;t find 3 workflows worth fixing in 30 minutes,
-            we&apos;ll send you a $25 DoorDash credit. No catch.
-          </p>
-          <LiveTicker className="mt-7" />
-          <PilotBar className="mt-10" />
         </TextPanel>
 
         {/* Scene 1 — 2D Problem dashboard */}
@@ -305,14 +288,14 @@ export function SceneOverlay({ proxyRef }: Props) {
 
         {/* Scene 4 — 3D Network (blocks spread) */}
         <TextPanel active={sceneIdx === 4} layout="center">
-          <Eyebrow>How it works</Eyebrow>
+          <Eyebrow>How we&apos;re built</Eyebrow>
           <Headline>
-            Built once. <Grad>Reused across your shop.</Grad>
+            A service today. <Grad>Software tomorrow.</Grad>
           </Headline>
           <Sub>
-            We start as a productized service with recurring support — and
-            as patterns repeat across your workflows, they get cleaner,
-            faster, and cheaper to extend.
+            We start as a productized automation service with recurring
+            support — fix workflows, learn what repeats across shops, and
+            turn the strongest pieces into software later.
           </Sub>
         </TextPanel>
 
@@ -321,21 +304,27 @@ export function SceneOverlay({ proxyRef }: Props) {
           <ToolsScene />
         </DashboardPanel>
 
-        {/* Scene 6 — 3D Audit finale */}
+        {/* Scene 6 — 3D Get in touch finale */}
         <TextPanel active={sceneIdx === 6} layout="center">
-          <Eyebrow>Get audit</Eyebrow>
+          <Eyebrow>Get in touch</Eyebrow>
           <Headline>
-            Book the <Grad>free workflow audit.</Grad>
+            Tell us <Grad>what&apos;s broken.</Grad>
           </Headline>
           <Sub>
-            30 minutes, screen-share. We&apos;ll map the three workflows
-            we&apos;d build first — costed and ranked by ROI. If none of them
-            are worth fixing, lunch&apos;s on us.
+            We&apos;re working with our first shops now. If your admin
+            work is slowing the business down, we want to hear about
+            it — and we&apos;ll be straight about whether we can help.
           </Sub>
-          <div className="mt-10 pointer-events-auto">
-            <Button size="lg" type="button">
-              Book the 30-min audit — lunch&apos;s on us
-            </Button>
+          <div className="mt-10 pointer-events-auto flex flex-col items-center">
+            <a
+              href="mailto:social@zephlyn.io"
+              className="type-button inline-flex items-center justify-center gap-2 rounded-md whitespace-nowrap select-none h-12 px-7 text-[15px] bg-primary text-primary-foreground hover:bg-purple-800 active:bg-purple-900 active:scale-[0.98] transition-[background,color,box-shadow,transform] duration-150 ease-out"
+            >
+              Email us
+            </a>
+            <p className="type-caption text-muted-foreground mt-3 font-mono">
+              social@zephlyn.io
+            </p>
           </div>
         </TextPanel>
       </div>
@@ -461,8 +450,16 @@ function Eyebrow({ children }: { children: React.ReactNode }) {
 }
 
 function Headline({ children }: { children: React.ReactNode }) {
+  // text-shadow halo in the page background color — punches the glyphs
+  // through any bright 3D bloom behind them so the headline always reads.
   return (
-    <h2 className="font-display font-bold leading-[1.0] tracking-[-0.045em] text-foreground max-w-[20ch] text-[clamp(2.5rem,7vw,5.5rem)]">
+    <h2
+      className="font-display font-bold leading-[1.0] tracking-[-0.045em] text-foreground max-w-[20ch] text-[clamp(2.5rem,7vw,5.5rem)] [text-wrap:balance]"
+      style={{
+        textShadow:
+          "0 0 24px var(--background), 0 0 8px var(--background), 0 1px 2px var(--background)",
+      }}
+    >
       {children}
     </h2>
   );
@@ -474,7 +471,7 @@ function Grad({ children }: { children: React.ReactNode }) {
 
 function Sub({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-muted-foreground leading-[1.55] max-w-[60ch] mt-6 text-[clamp(1rem,1.4vw,1.25rem)]">
+    <p className="text-muted-foreground leading-[1.55] max-w-[60ch] mt-6 text-[clamp(1rem,1.4vw,1.25rem)] [text-wrap:pretty]">
       {children}
     </p>
   );

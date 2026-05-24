@@ -56,10 +56,10 @@ const ACTIONS: Action[] = [
   })),
   {
     id: "pillars",
-    title: "Six pillars",
+    title: "Where we start",
     hint: "Section",
     group: "Sections",
-    keywords: "pillars platform",
+    keywords: "pillars platform where start what we automate",
     run: () => scrollToHash("#pillars"),
   },
   {
@@ -71,27 +71,19 @@ const ACTIONS: Action[] = [
     run: () => scrollToHash("#why"),
   },
   {
-    id: "pricing",
-    title: "Pricing — what it costs",
-    hint: "Section",
-    group: "Sections",
-    keywords: "pricing cost tier",
-    run: () => scrollToHash("#pricing"),
-  },
-  {
     id: "faq",
-    title: "FAQ",
+    title: "Common questions",
     hint: "Section",
     group: "Sections",
-    keywords: "questions support",
+    keywords: "questions faq support",
     run: () => scrollToHash("#faq"),
   },
   {
-    id: "book",
-    title: "Book a free workflow audit",
+    id: "contact",
+    title: "Get in touch",
     hint: "Action",
     group: "Sections",
-    keywords: "book audit demo call cta",
+    keywords: "contact email talk reach out cta",
     run: () => scrollToHash("#get-started"),
   },
   {
@@ -112,12 +104,12 @@ const ACTIONS: Action[] = [
   },
   {
     id: "mail",
-    title: "Email hello@zephlyn.io",
+    title: "Email social@zephlyn.io",
     hint: "External",
     group: "Contact",
     keywords: "email contact mail",
     run: () => {
-      window.location.href = "mailto:hello@zephlyn.io";
+      window.location.href = "mailto:social@zephlyn.io";
     },
   },
 ];

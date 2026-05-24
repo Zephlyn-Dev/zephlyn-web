@@ -23,10 +23,7 @@ export function ProblemScene() {
         </h2>
       </div>
 
-      <DashboardChrome
-        pill="Live · Apex HVAC — your owner's phone"
-        label="11 UNREAD · 0 ROUTED · LOST REVENUE: $9,840 TODAY"
-      >
+      <DashboardChrome pill="Sources a typical shop juggles">
         <DisconnectedFlow />
       </DashboardChrome>
     </div>
