@@ -1,35 +1,55 @@
 import type { Metadata, Viewport } from "next";
+import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
 import { ThemeProvider, themeBootScript } from "@/components/theme-provider";
 import { GsapProvider } from "@/components/gsap-provider";
+import { cn } from "@/lib/cn";
 import "./globals.css";
 
 /**
  * Zephlyn — Root layout
  *
  * Notes for future maintainers:
- * - Satoshi is loaded via Fontshare in <head> below. If you migrate to a
- *   self-hosted/Next-font setup, update `--zeph-font-display` in tokens.css.
+ * - Plus Jakarta Sans (display + body) and JetBrains Mono (overlines / code)
+ *   are self-hosted and optimized via next/font/google — no raw <link> to
+ *   Google Fonts, so there's no render-blocking request and no layout shift.
+ *   Their CSS variables are wired into `--zeph-font-*` in tokens.css.
  * - The theme boot script runs BEFORE React hydrates, preventing a flash.
  * - All metadata lives here so individual pages only need to override what
  *   actually differs (title template handles per-page titles).
  */
 
+const jakarta = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  variable: "--font-jakarta",
+  display: "swap",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-jb-mono",
+  display: "swap",
+});
+
+const SITE_TITLE = "Zephlyn — Your business, finally running itself.";
+const SITE_DESCRIPTION =
+  "For small businesses still running on memory, sticky notes, and missed calls. Zephlyn connects your scattered tools and tasks into one flow that runs without you.";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://zephlyn.io"),
   title: {
-    default: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
+    default: SITE_TITLE,
     template: "%s · Zephlyn",
   },
-  description:
-    "Automation for home service shops drowning in admin work — so leads get answered, estimates move, and sold jobs reach ops cleanly.",
+  description: SITE_DESCRIPTION,
   applicationName: "Zephlyn",
   keywords: [
     "automation",
+    "productized automation",
+    "small business automation",
     "workflow automation",
-    "home service",
-    "HVAC",
-    "field service",
-    "ops",
+    "booking automation",
     "Zephlyn",
   ],
   authors: [{ name: "Zephlyn" }],
@@ -38,25 +58,25 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: "Zephlyn",
-    title: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
-    description:
-      "Automation for home service shops drowning in admin work — so leads get answered, estimates move, and sold jobs reach ops cleanly.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     url: "https://zephlyn.io",
     locale: "en_US",
     images: [
       {
+        // NOTE: og-image.png still renders the old "Less admin / Faster jobs"
+        // tagline — regenerate from public/og-image-source.svg to match.
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
+        alt: "Zephlyn — Your business, finally running itself.",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zephlyn — Less admin. Faster jobs. Cleaner handoffs.",
-    description:
-      "Automation for home service shops drowning in admin work.",
+    title: SITE_TITLE,
+    description: SITE_DESCRIPTION,
     images: ["/og-image.png"],
   },
   icons: {
@@ -83,29 +103,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      suppressHydrationWarning
+      className={cn(jakarta.variable, jetbrainsMono.variable)}
+    >
       <head>
-        {/* Satoshi via Fontshare */}
-        <link
-          rel="preconnect"
-          href="https://api.fontshare.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://api.fontshare.com/v2/css?f[]=satoshi@500,700,900&display=swap"
-          rel="stylesheet"
-        />
-        {/* JetBrains Mono for code/UI metadata */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
-          rel="stylesheet"
-        />
         {/* Theme boot — prevents flash of wrong theme */}
         <script dangerouslySetInnerHTML={{ __html: themeBootScript }} />
       </head>

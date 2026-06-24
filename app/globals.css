@@ -68,6 +68,10 @@
   --constellation-star:      #1E1B4B;
   --constellation-star-glow: #4338CA;
   --constellation-line:      var(--primary);
+  /* Light mode: background lines recede much further than in dark so they
+     stay behind content. The purple line *color* is constant across themes
+     (--constellation-line); only this opacity multiplier changes. */
+  --constellation-line-mul:  0.3;
 }
 
 /* ============================================================
@@ -120,6 +124,7 @@
   --constellation-star:      #F8F4E8;
   --constellation-star-glow: #FFFFFF;
   --constellation-line:      var(--primary);
+  --constellation-line-mul:  1;
 }
 
 /* ============================================================
@@ -727,6 +732,165 @@
 .shimmer-border:focus-within::before {
   opacity: 1;
   animation: shimmer-spin 6s linear infinite;
+}
+
+/* ============================================================
+   6.95.  Landing (v2) — constellation layering helpers
+   The constellation is a fixed background layer (z-0); all content sits
+   above it. Where content overlaps, these surfaces mask the lines so
+   text never loses contrast and lines never poke through card edges.
+   ============================================================ */
+
+/* Fixed full-viewport background layer that hosts the SVG constellation. */
+.constellation-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  /* A whisper-soft vertical wash of the page background so the field
+     reads as sky, and the very top/bottom edges stay calm. */
+  background:
+    radial-gradient(120% 80% at 50% -10%,
+      color-mix(in srgb, var(--primary) 7%, transparent) 0%,
+      transparent 55%),
+    var(--background);
+}
+.dark .constellation-layer {
+  background:
+    radial-gradient(120% 80% at 50% -10%,
+      color-mix(in srgb, var(--primary) 16%, transparent) 0%,
+      transparent 55%),
+    var(--background);
+}
+
+/* Glass surface for cards that sit over the constellation. Opaque enough
+   that body text keeps AA contrast regardless of the stars/lines behind,
+   while the slight translucency + blur keeps the field faintly visible. */
+.landing-card {
+  position: relative;
+  border-radius: var(--zeph-radius-xl);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.08);
+  -webkit-backdrop-filter: blur(10px) saturate(1.08);
+  box-shadow: var(--zeph-shadow-md);
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+.dark .landing-card {
+  background: color-mix(in srgb, var(--card) 74%, transparent);
+  border-color: rgba(244, 241, 234, 0.1);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.04),
+    0 18px 44px -26px rgba(0, 0, 0, 0.85);
+}
+.landing-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+  box-shadow: var(--zeph-shadow-lg);
+}
+
+/* Soft wash of the page background behind free-standing text (hero, section
+   headings) so copy stays legible where it floats over the open starfield. */
+.text-scrim {
+  position: relative;
+  isolation: isolate;
+}
+.text-scrim::before {
+  content: "";
+  position: absolute;
+  inset: -12% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    62% 72% at 50% 46%,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 64%, transparent) 46%,
+    transparent 76%
+  );
+}
+
+/* Eyebrow / overline label. Theme-aware purple tuned for WCAG AA:
+   purple-700 on light = 8.1:1, purple-400 on dark = 5.4:1 (both > 4.5:1
+   for this small uppercase text). */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--zeph-font-body);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--zeph-purple-700);
+}
+.dark .eyebrow {
+  color: var(--zeph-purple-400);
+}
+
+/* ============================================================
+   6.96.  Constellation motion — diamond stars
+   Twinkle (ambient, CSS), drift (ambient layers, CSS, desktop-only),
+   and hover-near glow (fine-pointer desktop). Scroll draw / fade / scale
+   / parallax are driven from JS in components/landing/constellation.tsx.
+   All of this is gated off under prefers-reduced-motion (here AND by the
+   global §7 rule). Animate transform/opacity/filter only — no reflow.
+
+   Tunables:
+     --twinkle-floor  opacity dips to this fraction of base. Raise → calmer.
+     --drift-amp      global drift multiplier. Lower → calmer. 0 → drift off.
+   ============================================================ */
+:root {
+  --twinkle-floor: 0.55;
+  --drift-amp: 1;
+}
+
+/* Base diamond — opacity governed by --star-op (ambient: its own opacity;
+   narrative: 1, with scroll-fade applied on the wrapping <g>). */
+.zeph-spark {
+  opacity: var(--star-op, 1);
+}
+
+@keyframes zeph-twinkle {
+  0%, 100% { opacity: var(--star-op, 1); }
+  50%      { opacity: calc(var(--star-op, 1) * var(--twinkle-floor, 0.55)); }
+}
+
+/* Ambient layer drift — translate only, so it's origin-independent and never
+   reflows. Desktop only; mobile keeps the field still (twinkle still runs). */
+@keyframes zeph-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% {
+    transform: translate(
+      calc(var(--drift-dx, 0) * var(--drift-amp, 1) * 1px),
+      calc(var(--drift-dy, 0) * var(--drift-amp, 1) * 1px)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .zeph-spark.twinkle {
+    animation: zeph-twinkle var(--tw-dur, 4.5s) ease-in-out var(--tw-delay, 0s) infinite;
+    will-change: opacity;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  .amb-drift {
+    animation: zeph-drift var(--drift-dur, 30s) ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+/* Hover-near glow — fine-pointer desktops only. Filter only (no layout).
+   The `is-near` class is toggled from JS, which only attaches the listener
+   on fine pointers, so this is a no-op on touch. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .zeph-spark {
+    transition: filter 0.3s ease;
+  }
+  .zeph-spark.is-near {
+    filter: drop-shadow(0 0 4px var(--constellation-star-glow)) brightness(1.4);
+  }
 }
 
 /* ============================================================

@@ -85,10 +85,14 @@
   --zeph-navbar-h:        64px;
   --zeph-section-py:      clamp(3rem, 8vw, 6rem);
 
-  /* ——— Type families ——— */
-  --zeph-font-display:  "Satoshi", "Plus Jakarta Sans", "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --zeph-font-body:     "Satoshi", "Plus Jakarta Sans", "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-  --zeph-font-mono:     "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* ——— Type families ———
+     Display + body share Plus Jakarta Sans (loaded via next/font in
+     app/layout.tsx, exposed as --font-jakarta). Mono is JetBrains Mono
+     (--font-jb-mono). The literal family names are fallbacks for the
+     brief moment before the next/font CSS variable resolves. */
+  --zeph-font-display:  var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --zeph-font-body:     var(--font-jakarta), "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --zeph-font-mono:     var(--font-jb-mono), "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
 
   /* ——— Motion ——— */
   --zeph-ease:          cubic-bezier(0.22, 1, 0.36, 1);
