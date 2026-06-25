@@ -1,0 +1,957 @@
+/* ============================================================
+   Zephlyn — Global styles + semantic tokens
+   Tailwind v4 CSS-first config. Pairs with tokens.css (primitives).
+
+   Architecture:
+     primitives (tokens.css)  →  semantic (this file)  →  components
+     Always consume the semantic layer in components.
+     Never reference --zeph-purple-700 directly outside this file.
+   ============================================================ */
+
+@import "tailwindcss";
+@import "./tokens.css";
+
+/* ============================================================
+   1.  Semantic tokens — light mode (default)
+   ============================================================ */
+:root {
+  /* surface */
+  --background:            var(--zeph-lavender);
+  --foreground:            var(--zeph-ink);
+
+  --card:                  var(--zeph-white);
+  --card-foreground:       var(--zeph-ink);
+
+  --popover:               var(--zeph-white);
+  --popover-foreground:    var(--zeph-ink);
+
+  /* brand */
+  --primary:               var(--zeph-purple-700);
+  --primary-foreground:    var(--zeph-white);
+
+  --secondary:             var(--zeph-purple-50);
+  --secondary-foreground:  var(--zeph-purple-800);
+
+  --accent:                var(--zeph-purple-100);
+  --accent-foreground:     var(--zeph-purple-800);
+
+  /* neutrals */
+  --muted:                 var(--zeph-gray-100);
+  --muted-foreground:      var(--zeph-gray-600);
+
+  --border:                var(--zeph-gray-200);
+  --input:                 var(--zeph-gray-200);
+  --ring:                  var(--zeph-purple-500);
+
+  /* status */
+  --destructive:           var(--zeph-danger-500);
+  --destructive-foreground:var(--zeph-white);
+
+  --success:               var(--zeph-success-500);
+  --success-foreground:    var(--zeph-white);
+
+  --warning:               var(--zeph-warning-500);
+  --warning-foreground:    var(--zeph-white);
+
+  --info:                  var(--zeph-info-500);
+  --info-foreground:       var(--zeph-white);
+
+  /* radius alias used by shadcn/ui */
+  --radius:                var(--zeph-radius-md);
+
+  /* Constellation cinematic — light theme.
+     Read by components/scene/constellation/. The starfield uses these
+     directly (no Tailwind utility passthrough) so theme parity stays
+     a single source of truth. */
+  --constellation-bg-from:   #FAFAF8;
+  --constellation-bg-to:     #F0EEEA;
+  --constellation-star:      #1E1B4B;
+  --constellation-star-glow: #4338CA;
+  --constellation-line:      var(--primary);
+  /* Light mode: background lines recede much further than in dark so they
+     stay behind content. The purple line *color* is constant across themes
+     (--constellation-line); only this opacity multiplier changes. */
+  --constellation-line-mul:  0.3;
+}
+
+/* ============================================================
+   2.  Semantic tokens — dark mode
+   Activate by adding `class="dark"` to <html> or any ancestor.
+   ============================================================ */
+.dark {
+  --background:            var(--zeph-ink);
+  --foreground:            var(--zeph-paper);
+
+  --card:                  var(--zeph-gray-900);
+  --card-foreground:       var(--zeph-paper);
+
+  --popover:               var(--zeph-gray-900);
+  --popover-foreground:    var(--zeph-paper);
+
+  --primary:               var(--zeph-purple-500);
+  --primary-foreground:    var(--zeph-white);
+
+  --secondary:             var(--zeph-gray-800);
+  --secondary-foreground:  var(--zeph-paper);
+
+  --accent:                var(--zeph-purple-900);
+  --accent-foreground:     var(--zeph-purple-200);
+
+  --muted:                 var(--zeph-gray-800);
+  --muted-foreground:      var(--zeph-gray-300);  /* bumped from gray-400 → 7.5:1 contrast (AAA) */
+
+  --border:                var(--zeph-gray-800);
+  --input:                 var(--zeph-gray-800);
+  --ring:                  var(--zeph-purple-400);
+
+  --destructive:           var(--zeph-danger-300);
+  --destructive-foreground:var(--zeph-ink);
+
+  --success:               var(--zeph-success-300);
+  --success-foreground:    var(--zeph-ink);
+
+  --warning:               var(--zeph-warning-300);
+  --warning-foreground:    var(--zeph-ink);
+
+  --info:                  var(--zeph-info-300);
+  --info-foreground:       var(--zeph-ink);
+
+  /* Constellation cinematic — dark theme. Stars are warm-white so the
+     starfield reads like a night-sky photo, not phosphor. Line color
+     stays brand purple in both themes — the one through-line. */
+  --constellation-bg-from:   #0A0A0F;
+  --constellation-bg-to:     #050507;
+  --constellation-star:      #F8F4E8;
+  --constellation-star-glow: #FFFFFF;
+  --constellation-line:      var(--primary);
+  --constellation-line-mul:  1;
+}
+
+/* ============================================================
+   3.  Tailwind v4 @theme — exposes our tokens to utilities
+   `bg-primary`, `text-muted-foreground`, `rounded-lg`,
+   `shadow-md`, `font-display`, etc., all flow from here.
+   ============================================================ */
+@theme inline {
+  /* colors → semantic */
+  --color-background:            var(--background);
+  --color-foreground:            var(--foreground);
+  --color-card:                  var(--card);
+  --color-card-foreground:       var(--card-foreground);
+  --color-popover:               var(--popover);
+  --color-popover-foreground:    var(--popover-foreground);
+  --color-primary:               var(--primary);
+  --color-primary-foreground:    var(--primary-foreground);
+  --color-secondary:             var(--secondary);
+  --color-secondary-foreground:  var(--secondary-foreground);
+  --color-muted:                 var(--muted);
+  --color-muted-foreground:      var(--muted-foreground);
+  --color-accent:                var(--accent);
+  --color-accent-foreground:     var(--accent-foreground);
+  --color-destructive:           var(--destructive);
+  --color-destructive-foreground:var(--destructive-foreground);
+  --color-success:               var(--success);
+  --color-success-foreground:    var(--success-foreground);
+  --color-warning:               var(--warning);
+  --color-warning-foreground:    var(--warning-foreground);
+  --color-info:                  var(--info);
+  --color-info-foreground:       var(--info-foreground);
+  --color-border:                var(--border);
+  --color-input:                 var(--input);
+  --color-ring:                  var(--ring);
+
+  /* primitive surface aliases — exposed so the cinematic dark experience
+     can use bg-ink / text-paper directly without juggling dark-mode flip. */
+  --color-ink:    var(--zeph-ink);
+  --color-paper:  var(--zeph-paper);
+
+  /* primitive purple ramp — for charts, illustrations, edge cases */
+  --color-purple-50:   var(--zeph-purple-50);
+  --color-purple-100:  var(--zeph-purple-100);
+  --color-purple-200:  var(--zeph-purple-200);
+  --color-purple-300:  var(--zeph-purple-300);
+  --color-purple-400:  var(--zeph-purple-400);
+  --color-purple-500:  var(--zeph-purple-500);
+  --color-purple-600:  var(--zeph-purple-600);
+  --color-purple-700:  var(--zeph-purple-700);
+  --color-purple-800:  var(--zeph-purple-800);
+  --color-purple-900:  var(--zeph-purple-900);
+  --color-purple-950:  var(--zeph-purple-950);
+
+  /* radius */
+  --radius-sm:   var(--zeph-radius-sm);
+  --radius-md:   var(--zeph-radius-md);
+  --radius-lg:   var(--zeph-radius-lg);
+  --radius-xl:   var(--zeph-radius-xl);
+  --radius-2xl:  var(--zeph-radius-2xl);
+  --radius-full: var(--zeph-radius-full);
+
+  /* shadows */
+  --shadow-sm:    var(--zeph-shadow-sm);
+  --shadow-md:    var(--zeph-shadow-md);
+  --shadow-lg:    var(--zeph-shadow-lg);
+  --shadow-xl:    var(--zeph-shadow-xl);
+  --shadow-focus: var(--zeph-shadow-focus);
+
+  /* fonts */
+  --font-display: var(--zeph-font-display);
+  --font-sans:    var(--zeph-font-body);
+  --font-mono:    var(--zeph-font-mono);
+
+  /* container */
+  --container-7xl: 1280px;
+}
+
+/* ============================================================
+   4.  Base layer — sensible defaults
+   ============================================================ */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    color-scheme: light dark;
+  }
+
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--zeph-font-body);
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  ::selection {
+    background: var(--zeph-purple-200);
+    color: var(--zeph-purple-900);
+  }
+  .dark ::selection {
+    background: var(--zeph-purple-800);
+    color: var(--zeph-purple-100);
+  }
+
+  /* focus ring — everything keyboard-accessible */
+  :where(button, [role="button"], a, input, textarea, select, [tabindex]):focus-visible {
+    outline: none;
+    box-shadow: var(--zeph-shadow-focus);
+    border-radius: var(--zeph-radius-sm);
+  }
+}
+
+/* ============================================================
+   5.  Type scale — class-based + reusable
+   Use as utility classes:  <h1 class="type-h1">…</h1>
+   Or via Tailwind tokens above (font-display, font-mono).
+   ============================================================ */
+@layer components {
+  .type-display {
+    font-family: var(--zeph-font-display);
+    font-weight: 800;
+    font-size: clamp(3rem, 6vw, 4.5rem);     /* 48 → 72 */
+    line-height: 1.02;
+    letter-spacing: -0.04em;
+  }
+  .type-h1 {
+    font-family: var(--zeph-font-display);
+    font-weight: 700;
+    font-size: clamp(2.25rem, 4vw, 3.5rem);  /* 36 → 56 */
+    line-height: 1.05;
+    letter-spacing: -0.035em;
+  }
+  .type-h2 {
+    font-family: var(--zeph-font-display);
+    font-weight: 700;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);  /* 28 → 40 */
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .type-h3 {
+    font-family: var(--zeph-font-display);
+    font-weight: 700;
+    font-size: 1.75rem;                      /* 28 */
+    line-height: 1.2;
+    letter-spacing: -0.025em;
+  }
+  .type-h4 {
+    font-family: var(--zeph-font-display);
+    font-weight: 600;
+    font-size: 1.375rem;                     /* 22 */
+    line-height: 1.25;
+    letter-spacing: -0.02em;
+  }
+  .type-body-lg {
+    font-family: var(--zeph-font-body);
+    font-weight: 400;
+    font-size: 1.125rem;                     /* 18 */
+    line-height: 1.55;
+  }
+  .type-body {
+    font-family: var(--zeph-font-body);
+    font-weight: 400;
+    font-size: 1rem;                         /* 16 */
+    line-height: 1.55;
+  }
+  .type-body-sm {
+    font-family: var(--zeph-font-body);
+    font-weight: 400;
+    font-size: 0.875rem;                     /* 14 */
+    line-height: 1.5;
+  }
+  .type-caption {
+    font-family: var(--zeph-font-body);
+    font-weight: 500;
+    font-size: 0.75rem;                      /* 12 */
+    line-height: 1.4;
+    color: var(--muted-foreground);
+  }
+  .type-label {
+    font-family: var(--zeph-font-body);
+    font-weight: 600;
+    font-size: 0.8125rem;                    /* 13 */
+    line-height: 1.4;
+    letter-spacing: -0.005em;
+  }
+  .type-button {
+    font-family: var(--zeph-font-body);
+    font-weight: 600;
+    font-size: 0.875rem;                     /* 14 */
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+  }
+  .type-nav {
+    font-family: var(--zeph-font-body);
+    font-weight: 500;
+    font-size: 0.875rem;                     /* 14 */
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+  }
+  .type-code {
+    font-family: var(--zeph-font-mono);
+    font-weight: 400;
+    font-size: 0.8125rem;                    /* 13 */
+    line-height: 1.55;
+    letter-spacing: 0;
+  }
+  .type-overline {
+    font-family: var(--zeph-font-mono);
+    font-weight: 500;
+    font-size: 0.6875rem;                    /* 11 */
+    line-height: 1.3;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted-foreground);
+  }
+}
+
+/* ============================================================
+   6.  Animations used by the cinematic landing page
+   ============================================================ */
+@keyframes scrollDot {
+  0%   { transform: translateY(-12px); opacity: 0; }
+  30%  { opacity: 1; }
+  100% { transform: translateY(36px); opacity: 0; }
+}
+
+@keyframes liveDot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.55; transform: scale(0.85); }
+}
+
+/* ============================================================
+   FAQ — native details/summary, with +/− indicator.
+   Uses semantic --border so it works in both light + dark themes.
+   ============================================================ */
+/* Enable smooth height transitions to/from `auto` in supporting browsers.
+   Falls back to instant in older browsers — graceful degradation. */
+@supports (interpolate-size: allow-keywords) {
+  :root { interpolate-size: allow-keywords; }
+}
+
+.faq-item {
+  border-top: 1px solid var(--border);
+  border-left: 2px solid transparent;
+  padding-left: 0;
+  margin-left: 0;
+  transition:
+    background-color 240ms ease-out,
+    border-left-color 240ms ease-out,
+    padding-left 240ms ease-out;
+}
+.faq-item:last-child {
+  border-bottom: 1px solid var(--border);
+}
+.faq-item[open] {
+  background: color-mix(in srgb, var(--primary) 4%, transparent);
+  border-left-color: var(--zeph-purple-500);
+  padding-left: 16px;
+}
+.dark .faq-item[open] {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  border-left-color: var(--zeph-purple-400);
+}
+.faq-item > summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 0;
+  font-family: var(--zeph-font-display);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--foreground);
+}
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item > summary::after {
+  content: "+";
+  display: inline-block;
+  font-family: var(--zeph-font-mono);
+  font-weight: 400;
+  font-size: 20px;
+  color: var(--zeph-purple-500);
+  transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: center;
+}
+.dark .faq-item > summary::after {
+  color: var(--zeph-purple-300);
+}
+.faq-item[open] > summary::after {
+  transform: rotate(45deg);
+}
+.faq-item > .faq-body {
+  padding: 0 36px 22px 0;
+  color: var(--muted-foreground);
+  font-size: 15px;
+  line-height: 1.6;
+}
+.faq-item[open] > .faq-body {
+  padding-right: 36px;
+  padding-left: 0;
+}
+
+/* Smooth open transition using the modern `transition-behavior: allow-discrete`
+   pattern + `display: block` with starting-style. Works in Chrome 117+, Safari
+   17.4+, Firefox 129+. Falls back to instant open in older browsers. */
+.faq-item > .faq-body {
+  display: block;
+  overflow: hidden;
+  height: auto;
+  max-height: 480px;
+  opacity: 1;
+  transition:
+    max-height 320ms ease-out,
+    opacity 240ms ease-out 60ms,
+    padding 240ms ease-out;
+}
+.faq-item:not([open]) > .faq-body {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* ============================================================
+   Final CTA — rounded band with radial purple glow at top-right.
+   Theme-aware: subtle elevation in light mode, glow in dark.
+   ============================================================ */
+.cta-band {
+  position: relative;
+  border-radius: var(--zeph-radius-2xl);
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 85% 0%,
+      rgba(124, 58, 237, 0.12) 0%,
+      rgba(124, 58, 237, 0.04) 30%,
+      transparent 60%),
+    var(--card);
+  overflow: hidden;
+}
+.dark .cta-band {
+  background:
+    radial-gradient(circle at 85% 0%,
+      rgba(124, 58, 237, 0.25) 0%,
+      rgba(124, 58, 237, 0.08) 30%,
+      transparent 60%),
+    linear-gradient(180deg,
+      rgba(255, 255, 255, 0.025),
+      rgba(255, 255, 255, 0.01));
+}
+
+/* ============================================================
+   6.5.  AmbientGlows — drifting purple radial blobs behind sections
+   Used by <AmbientGlows /> in components/animations/ambient-glows.tsx.
+   ============================================================ */
+@keyframes amb-drift-0 {
+  0%   { transform: translate3d(0,     0,    0) scale(1);   }
+  33%  { transform: translate3d(6vw,  -4vh,  0) scale(1.08);}
+  66%  { transform: translate3d(-4vw,  5vh,  0) scale(0.95);}
+  100% { transform: translate3d(0,     0,    0) scale(1);   }
+}
+@keyframes amb-drift-1 {
+  0%   { transform: translate3d(0,     0,    0) scale(1);   }
+  40%  { transform: translate3d(-7vw,  4vh,  0) scale(1.05);}
+  72%  { transform: translate3d(5vw,   6vh,  0) scale(0.9); }
+  100% { transform: translate3d(0,     0,    0) scale(1);   }
+}
+@keyframes amb-drift-2 {
+  0%   { transform: translate3d(0,     0,    0) scale(1);   }
+  50%  { transform: translate3d(8vw,   3vh,  0) scale(1.12);}
+  100% { transform: translate3d(0,     0,    0) scale(1);   }
+}
+@keyframes amb-breathe {
+  0%, 100% { opacity: var(--amb-min, 0.05); }
+  50%      { opacity: var(--amb-max, 0.16); }
+}
+.amb-blob {
+  position: absolute;
+  border-radius: 9999px;
+  /* Halved the blur radius — 80px was producing huge offscreen GPU
+     textures that competed with the WebGL canvas for frame budget,
+     visibly degrading the cinematic tunnel scroll. 44px still reads
+     as a soft glow. */
+  filter: blur(44px);
+  will-change: transform, opacity;
+  pointer-events: none;
+  /* mix-blend-mode: screen/lighten was forcing each blob into its
+     own compositor layer and re-compositing the WebGL canvas under
+     it on every scroll tick. Removed; the blobs still look like
+     gentle glows, just additive only via alpha. */
+}
+/* Hide the ambient field while it is offscreen — major savings during
+   the cinematic block. The intrinsic-size hint keeps layout stable
+   while skipped. */
+.amb-field {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 800px;
+}
+
+/* ============================================================
+   6.9.  View Transitions — directional page slides
+   See: components/transitions/page-transition.tsx
+   Triggered by Next 16 Link `transitionTypes={['nav-forward']}` /
+   `nav-back`. The site-header is anchored separately so it never
+   slides — that's the fixed reference that makes the directional
+   motion read as "content moved", not "everything moved".
+   ============================================================ */
+:root {
+  --view-duration-exit:  170ms;
+  --view-duration-enter: 230ms;
+  --view-slide-distance: 60px;
+}
+
+/* Anchor the header — old snapshot is hidden so it doesn't double-
+   stack, new one is shown without animation. */
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 100;
+}
+::view-transition-old(site-header) { display: none; }
+::view-transition-new(site-header) { animation: none; }
+
+/* Forward navigation: old content slides left + fades, new arrives
+   from right + fades in (delayed until exit completes). */
+::view-transition-old(.nav-forward) {
+  --vt-offset: calc(-1 * var(--view-slide-distance));
+  animation:
+    var(--view-duration-exit) ease-in both vt-fade reverse,
+    420ms ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --vt-offset: var(--view-slide-distance);
+  animation:
+    var(--view-duration-enter) ease-out var(--view-duration-exit) both vt-fade,
+    420ms ease-in-out both vt-slide;
+}
+
+/* Back navigation: mirror — old slides right, new arrives from left. */
+::view-transition-old(.nav-back) {
+  --vt-offset: var(--view-slide-distance);
+  animation:
+    var(--view-duration-exit) ease-in both vt-fade reverse,
+    420ms ease-in-out both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --vt-offset: calc(-1 * var(--view-slide-distance));
+  animation:
+    var(--view-duration-enter) ease-out var(--view-duration-exit) both vt-fade,
+    420ms ease-in-out both vt-slide;
+}
+
+@keyframes vt-fade {
+  from { opacity: 0; filter: blur(3px); }
+  to   { opacity: 1; filter: blur(0);   }
+}
+@keyframes vt-slide {
+  from { translate: var(--vt-offset, 0); }
+  to   { translate: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(*),
+  ::view-transition-new(*),
+  ::view-transition-group(*) {
+    animation-duration: 0s !important;
+    animation-delay:    0s !important;
+  }
+}
+
+/* ============================================================
+   6.6.  Live-dot pulse — small green status indicators
+   ============================================================ */
+@keyframes liveDot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--zeph-success-500) 70%, transparent);
+    opacity: 1;
+  }
+  50% {
+    box-shadow: 0 0 0 6px transparent;
+    opacity: 0.65;
+  }
+}
+
+/* ============================================================
+   6.7.  Animated link underline — draws in from left on hover
+   ============================================================ */
+.link-underline {
+  position: relative;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  transition: background-size 280ms ease-out;
+}
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+}
+
+/* ============================================================
+   6.75.  ROI slider — styled range input with thumb glow
+   ============================================================ */
+.zeph-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(
+    to right,
+    var(--primary) 0%,
+    var(--primary) var(--slider-fill, 50%),
+    var(--border) var(--slider-fill, 50%),
+    var(--border) 100%
+  );
+  border-radius: 9999px;
+  outline: none;
+}
+.zeph-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--primary);
+  border: 2px solid var(--card);
+  box-shadow:
+    0 0 0 0 color-mix(in srgb, var(--primary) 30%, transparent),
+    0 4px 10px -2px color-mix(in srgb, var(--primary) 35%, transparent);
+  cursor: grab;
+  transition: box-shadow 200ms ease-out, transform 120ms ease-out;
+}
+.zeph-slider::-webkit-slider-thumb:hover {
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, var(--primary) 18%, transparent),
+    0 6px 14px -2px color-mix(in srgb, var(--primary) 45%, transparent);
+}
+.zeph-slider:active::-webkit-slider-thumb,
+.zeph-slider::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.08);
+  box-shadow:
+    0 0 0 10px color-mix(in srgb, var(--primary) 22%, transparent),
+    0 6px 14px -2px color-mix(in srgb, var(--primary) 50%, transparent);
+}
+.zeph-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: var(--primary);
+  border: 2px solid var(--card);
+  box-shadow:
+    0 0 0 0 color-mix(in srgb, var(--primary) 30%, transparent),
+    0 4px 10px -2px color-mix(in srgb, var(--primary) 35%, transparent);
+  cursor: grab;
+  transition: box-shadow 200ms ease-out, transform 120ms ease-out;
+}
+.zeph-slider::-moz-range-thumb:hover {
+  box-shadow:
+    0 0 0 8px color-mix(in srgb, var(--primary) 18%, transparent),
+    0 6px 14px -2px color-mix(in srgb, var(--primary) 45%, transparent);
+}
+
+/* ============================================================
+   6.8.  Card border shimmer — rotating conic gradient on hover
+   Apply via `.shimmer-border` on a relatively-positioned card.
+   ============================================================ */
+@keyframes shimmer-spin {
+  to { transform: rotate(360deg); }
+}
+.shimmer-border {
+  position: relative;
+  isolation: isolate;
+}
+.shimmer-border::before {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  padding: 1px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    color-mix(in srgb, var(--primary) 60%, transparent) 60deg,
+    transparent 120deg,
+    transparent 360deg
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 220ms ease-out;
+  pointer-events: none;
+  z-index: -1;
+}
+.shimmer-border:hover::before,
+.shimmer-border:focus-within::before {
+  opacity: 1;
+  animation: shimmer-spin 6s linear infinite;
+}
+
+/* ============================================================
+   6.95.  Landing (v2) — constellation layering helpers
+   The constellation is a fixed background layer (z-0); all content sits
+   above it. Where content overlaps, these surfaces mask the lines so
+   text never loses contrast and lines never poke through card edges.
+   ============================================================ */
+
+/* Fixed full-viewport background layer that hosts the SVG constellation. */
+.constellation-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+  /* A whisper-soft vertical wash of the page background so the field
+     reads as sky, and the very top/bottom edges stay calm. */
+  background:
+    radial-gradient(120% 80% at 50% -10%,
+      color-mix(in srgb, var(--primary) 7%, transparent) 0%,
+      transparent 55%),
+    var(--background);
+}
+.dark .constellation-layer {
+  background:
+    radial-gradient(120% 80% at 50% -10%,
+      color-mix(in srgb, var(--primary) 16%, transparent) 0%,
+      transparent 55%),
+    var(--background);
+}
+
+/* Glass surface for cards that sit over the constellation. Opaque enough
+   that body text keeps AA contrast regardless of the stars/lines behind,
+   while the slight translucency + blur keeps the field faintly visible. */
+.landing-card {
+  position: relative;
+  border-radius: var(--zeph-radius-xl);
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
+  backdrop-filter: blur(10px) saturate(1.08);
+  -webkit-backdrop-filter: blur(10px) saturate(1.08);
+  box-shadow: var(--zeph-shadow-md);
+  transition: border-color 200ms ease, box-shadow 200ms ease, transform 200ms ease;
+}
+.dark .landing-card {
+  background: color-mix(in srgb, var(--card) 74%, transparent);
+  border-color: rgba(244, 241, 234, 0.1);
+  box-shadow:
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.04),
+    0 18px 44px -26px rgba(0, 0, 0, 0.85);
+}
+.landing-card-hover:hover {
+  transform: translateY(-3px);
+  border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+  box-shadow: var(--zeph-shadow-lg);
+}
+
+/* Soft wash of the page background behind free-standing text (hero, section
+   headings) so copy stays legible where it floats over the open starfield. */
+.text-scrim {
+  position: relative;
+  isolation: isolate;
+}
+.text-scrim::before {
+  content: "";
+  position: absolute;
+  inset: -12% -10%;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(
+    62% 72% at 50% 46%,
+    var(--background) 0%,
+    color-mix(in srgb, var(--background) 64%, transparent) 46%,
+    transparent 76%
+  );
+}
+
+/* Eyebrow / overline label. Theme-aware purple tuned for WCAG AA:
+   purple-700 on light = 8.1:1, purple-400 on dark = 5.4:1 (both > 4.5:1
+   for this small uppercase text). */
+.eyebrow {
+  display: inline-block;
+  font-family: var(--zeph-font-body);
+  font-weight: 600;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--zeph-purple-700);
+}
+.dark .eyebrow {
+  color: var(--zeph-purple-400);
+}
+
+/* ============================================================
+   6.96.  Constellation motion — diamond stars
+   Twinkle (ambient, CSS), drift (ambient layers, CSS, desktop-only),
+   and hover-near glow (fine-pointer desktop). Scroll draw / fade / scale
+   / parallax are driven from JS in components/landing/constellation.tsx.
+   All of this is gated off under prefers-reduced-motion (here AND by the
+   global §7 rule). Animate transform/opacity/filter only — no reflow.
+
+   Tunables:
+     --twinkle-floor  opacity dips to this fraction of base. Raise → calmer.
+     --drift-amp      global drift multiplier. Lower → calmer. 0 → drift off.
+   ============================================================ */
+:root {
+  --twinkle-floor: 0.55;
+  --drift-amp: 1;
+}
+
+/* Base diamond — opacity governed by --star-op (ambient: its own opacity;
+   narrative: 1, with scroll-fade applied on the wrapping <g>). */
+.zeph-spark {
+  opacity: var(--star-op, 1);
+}
+
+@keyframes zeph-twinkle {
+  0%, 100% { opacity: var(--star-op, 1); }
+  50%      { opacity: calc(var(--star-op, 1) * var(--twinkle-floor, 0.55)); }
+}
+
+/* Ambient layer drift — translate only, so it's origin-independent and never
+   reflows. Desktop only; mobile keeps the field still (twinkle still runs). */
+@keyframes zeph-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% {
+    transform: translate(
+      calc(var(--drift-dx, 0) * var(--drift-amp, 1) * 1px),
+      calc(var(--drift-dy, 0) * var(--drift-amp, 1) * 1px)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .zeph-spark.twinkle {
+    animation: zeph-twinkle var(--tw-dur, 4.5s) ease-in-out var(--tw-delay, 0s) infinite;
+    will-change: opacity;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) and (min-width: 768px) {
+  .amb-drift {
+    animation: zeph-drift var(--drift-dur, 30s) ease-in-out infinite;
+    will-change: transform;
+  }
+}
+
+/* Hover-near glow — fine-pointer desktops only. Filter only (no layout).
+   The `is-near` class is toggled from JS, which only attaches the listener
+   on fine pointers, so this is a no-op on touch. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .zeph-spark {
+    transition: filter 0.3s ease;
+  }
+  .zeph-spark.is-near {
+    filter: drop-shadow(0 0 4px var(--constellation-star-glow)) brightness(1.4);
+  }
+}
+
+/* ============================================================
+   6.97.  Animated brand mark — the final-CTA "logo resolve"
+   Opt-in via <ZephlynMark animated /> (default off, so header/footer marks
+   stay static). The hub breathes, the four corner dots twinkle clockwise in
+   sequence, and the whole mark carries a soft pulsing purple glow — the brand
+   echo of the constellation settling. Disabled under reduced motion.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .zeph-mark--animated {
+    animation: zeph-mark-glow 3.4s ease-in-out infinite;
+    will-change: filter;
+  }
+  .zeph-mark--animated .zeph-hub-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: zeph-hub-ring 3.4s ease-in-out infinite;
+  }
+  .zeph-mark--animated .zeph-hub-core {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: zeph-hub-core 3.4s ease-in-out infinite;
+  }
+  .zeph-mark--animated .zeph-dot {
+    animation: zeph-dot-twinkle 3.6s ease-in-out infinite;
+  }
+  /* Clockwise stagger from top-left → top-right → bottom-right → bottom-left. */
+  .zeph-mark--animated .zeph-dot:nth-of-type(1) { animation-delay: 0s; }
+  .zeph-mark--animated .zeph-dot:nth-of-type(2) { animation-delay: 0.45s; }
+  .zeph-mark--animated .zeph-dot:nth-of-type(3) { animation-delay: 0.9s; }
+  .zeph-mark--animated .zeph-dot:nth-of-type(4) { animation-delay: 1.35s; }
+}
+
+@keyframes zeph-mark-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 32%, transparent)); }
+  50%      { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--primary) 60%, transparent)); }
+}
+@keyframes zeph-hub-ring {
+  0%, 100% { transform: scale(1);    opacity: 0.18; }
+  50%      { transform: scale(1.5);  opacity: 0.42; }
+}
+@keyframes zeph-hub-core {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.14); }
+}
+@keyframes zeph-dot-twinkle {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ============================================================
+   7.  Reduced motion — respect user preference
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

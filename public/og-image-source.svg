@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="Zephlyn — Less admin. Faster jobs. Cleaner handoffs.">
+  <defs>
+    <radialGradient id="halo" cx="0.18" cy="0.92" r="0.85">
+      <stop offset="0" stop-color="#7C3AED" stop-opacity="0.18"/>
+      <stop offset="0.55" stop-color="#7C3AED" stop-opacity="0.04"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="halo2" cx="0.92" cy="0.10" r="0.7">
+      <stop offset="0" stop-color="#B69AFF" stop-opacity="0.14"/>
+      <stop offset="1" stop-color="#B69AFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wave" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#B69AFF" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#7C3AED" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#B69AFF" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="#FBFAFE"/>
+  <rect width="1200" height="630" fill="url(#halo)"/>
+  <rect width="1200" height="630" fill="url(#halo2)"/>
+
+  <g transform="translate(80 92)">
+    <g fill="none" stroke="#0A0517" stroke-linecap="round" stroke-width="1.4">
+      <path d="M 0 6 C 8 6 12 6 20 6 C 28 6 32 6 40 6" opacity="0.45"/>
+      <path d="M 0 22 C 8 22 12 22 20 22 C 28 22 32 22 40 22" opacity="0.45"/>
+      <path d="M -2 14 C 6 6 14 22 22 14 C 30 6 38 22 46 14" stroke="#4F1DD0" stroke-width="1.9"/>
+    </g>
+    <g fill="#0A0517">
+      <circle cx="0" cy="6" r="1.6"/>
+      <circle cx="40" cy="6" r="1.6"/>
+      <circle cx="0" cy="22" r="1.6"/>
+      <circle cx="40" cy="22" r="1.6"/>
+    </g>
+    <text x="70" y="22" font-family="Satoshi, 'Plus Jakarta Sans', Manrope, system-ui, sans-serif" font-weight="700" font-size="32" letter-spacing="-0.9" fill="#0A0517">Zephlyn</text>
+  </g>
+
+  <g font-family="Satoshi, 'Plus Jakarta Sans', Manrope, system-ui, sans-serif" font-weight="700" font-size="96" letter-spacing="-4.32">
+    <text x="80" y="295" fill="#0A0517">Less admin.</text>
+    <text x="80" y="395" fill="#0A0517">Faster jobs.</text>
+    <text x="80" y="495" fill="#4F1DD0">Cleaner handoffs.</text>
+  </g>
+
+  <g font-family="ui-monospace, 'JetBrains Mono', monospace" font-size="16" letter-spacing="2.6">
+    <text x="80" y="570" fill="#0A0517" opacity="0.55">ZEPHLYN.IO</text>
+    <text x="1120" y="570" text-anchor="end" fill="#0A0517" opacity="0.55">AUTOMATION FOR HOME SERVICE</text>
+  </g>
+
+  <rect x="0" y="618" width="1200" height="1.2" fill="url(#wave)"/>
+</svg>
