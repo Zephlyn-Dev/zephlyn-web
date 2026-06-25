@@ -1,6 +1,6 @@
 import { Section, Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
-import { ZephlynLogo } from "@/components/brand/logo";
+import { ZephlynMark } from "@/components/brand/logo";
 import { CONTACT_EMAIL, CTA } from "@/components/landing/content";
 
 export function FinalCta() {
@@ -11,8 +11,9 @@ export function FinalCta() {
           {/* The constellation resolves into a calm cluster behind this mark.
               Logo-agnostic: we anchor the resolved field to the logo's
               position rather than tracing its geometry, so swapping the
-              logo later doesn't break the section. */}
-          <ZephlynLogo size={40} iconOnly className="opacity-95" />
+              logo later doesn't break the section. The mark animates here (hub
+              breathes, dots twinkle, soft glow) as the brand "resolve" beat. */}
+          <ZephlynMark size={80} bold animated className="text-foreground" />
 
           <h2 className="type-h1 max-w-[18ch] text-balance text-foreground">
             {CTA.headline}

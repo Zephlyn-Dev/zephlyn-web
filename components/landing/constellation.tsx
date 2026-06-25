@@ -33,6 +33,7 @@
 
 import * as React from "react";
 import { useTheme } from "@/components/theme-provider";
+import { STARS, EDGES, mulberry32 } from "./constellation-data";
 
 /* ----------------------------------------------------------------------------
  * Tunables — adjust these to make the motion calmer or livelier.
@@ -56,48 +57,10 @@ const DRIFT = [
 const SPARK_PATH =
   "M0,-1.15 L0.18,-0.18 L0.9,0 L0.18,0.18 L0,1.15 L-0.18,0.18 L-0.9,0 L-0.18,-0.18 Z";
 
-/* ----------------------------------------------------------------------------
- * Curated narrative constellation. Coordinates live in a 0..1000 viewBox.
- * `rev` = scroll fraction at which the star resolves (negative => visible from
- * the very top). `glow` stars get a soft halo.
- * -------------------------------------------------------------------------- */
-type Star = { x: number; y: number; r: number; op: number; rev: number; glow: boolean };
-
-const STARS: Star[] = [
-  { x: 140, y: 160, r: 2.4, op: 0.95, rev: -0.2, glow: true },
-  { x: 300, y: 120, r: 1.5, op: 0.6, rev: 0.05, glow: false },
-  { x: 470, y: 210, r: 2.0, op: 0.9, rev: -0.2, glow: true },
-  { x: 250, y: 300, r: 1.4, op: 0.55, rev: 0.07, glow: false },
-  { x: 120, y: 420, r: 1.8, op: 0.8, rev: 0.09, glow: false },
-  { x: 380, y: 440, r: 2.6, op: 0.95, rev: -0.2, glow: true },
-  { x: 560, y: 360, r: 1.5, op: 0.6, rev: 0.1, glow: false },
-  { x: 700, y: 180, r: 2.2, op: 0.9, rev: -0.2, glow: true },
-  { x: 840, y: 260, r: 1.5, op: 0.6, rev: 0.12, glow: false },
-  { x: 660, y: 470, r: 2.0, op: 0.9, rev: -0.2, glow: true },
-  { x: 820, y: 460, r: 1.4, op: 0.55, rev: 0.14, glow: false },
-  { x: 200, y: 580, r: 1.7, op: 0.7, rev: 0.12, glow: false },
-  { x: 420, y: 620, r: 2.3, op: 0.9, rev: -0.2, glow: true },
-  { x: 600, y: 640, r: 1.6, op: 0.65, rev: 0.16, glow: false },
-  { x: 770, y: 620, r: 2.0, op: 0.85, rev: 0.1, glow: false },
-  { x: 300, y: 760, r: 1.5, op: 0.6, rev: 0.18, glow: false },
-  { x: 500, y: 800, r: 2.4, op: 0.95, rev: -0.2, glow: true },
-  { x: 690, y: 800, r: 1.6, op: 0.65, rev: 0.2, glow: false },
-  { x: 880, y: 720, r: 1.7, op: 0.7, rev: 0.16, glow: false },
-  { x: 150, y: 720, r: 1.4, op: 0.55, rev: 0.18, glow: false },
-  { x: 470, y: 520, r: 1.6, op: 0.65, rev: 0.12, glow: false },
-  { x: 920, y: 520, r: 1.5, op: 0.55, rev: 0.16, glow: false },
-];
-
-/* [from, to, threshold] — the connecting line draws when scroll passes `th`. */
-const EDGES: Array<[number, number, number]> = [
-  [0, 1, 0.14], [1, 2, 0.18], [2, 6, 0.26], [6, 5, 0.3], [5, 3, 0.22], [3, 0, 0.16],
-  [3, 4, 0.2], [4, 11, 0.34], [2, 7, 0.24], [7, 8, 0.3], [8, 10, 0.42], [6, 9, 0.32],
-  [9, 10, 0.46], [9, 20, 0.38], [20, 5, 0.36], [20, 13, 0.5], [13, 12, 0.48],
-  [12, 11, 0.46], [11, 19, 0.56], [12, 15, 0.58], [15, 16, 0.64], [16, 13, 0.6],
-  [16, 17, 0.68], [17, 14, 0.66], [14, 18, 0.72], [18, 21, 0.78], [14, 21, 0.74],
-  [13, 17, 0.7], [20, 6, 0.42], [9, 14, 0.62], [16, 19, 0.84], [21, 10, 0.88],
-  [0, 4, 0.92],
-];
+/* Narrative stars (STARS) + connection list (EDGES) come from the shared
+   constellation-data module so the SVG and the 3D enhancement draw the exact
+   same constellation. The SVG reads x/y/r/op/rev/glow; the data's `z` is for
+   the 3D camera and is ignored here. */
 
 const LINE_BASE_OP = 0.55;
 
@@ -108,18 +71,6 @@ const LAYERS: Layer[] = [
   { frac: 0.34, rMin: 0.6, rMax: 1.2, opMin: 0.15, opMax: 0.32, par: -24 },
   { frac: 0.2, rMin: 1.1, rMax: 2.3, opMin: 0.44, opMax: 0.88, par: 52 },
 ];
-
-/* Deterministic PRNG so SSR and client render identical fields (no hydration
-   mismatch) and a count change re-uses the same positions. */
-function mulberry32(seed: number) {
-  return function () {
-    seed |= 0;
-    seed = (seed + 0x6d2b79f5) | 0;
-    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 type Ambient = {
   x: number; y: number; r: number; op: number; layer: number;
