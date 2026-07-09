@@ -1,4 +1,4 @@
-import { Constellation } from "@/components/landing/constellation";
+import { ConstellationLayer } from "@/components/landing/constellation-layer";
 import { SiteHeader } from "@/components/landing/site-header";
 import { Hero } from "@/components/landing/hero";
 import { Scatter } from "@/components/landing/scatter";
@@ -13,8 +13,9 @@ import { RevealOnScroll } from "@/components/animations/reveal-on-scroll";
 export default function HomePage() {
   return (
     <>
-      {/* Background layer — one continuous SVG constellation behind everything. */}
-      <Constellation />
+      {/* Background layer — SVG constellation by default; the WebGL enhancement
+          mounts on capable desktops and falls back to SVG on any failure. */}
+      <ConstellationLayer />
 
       {/* Content layer — sits above the constellation; transparent so the
           starfield shows through except where cards / scrims protect text. */}

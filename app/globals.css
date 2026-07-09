@@ -894,6 +894,55 @@
 }
 
 /* ============================================================
+   6.97.  Animated brand mark — the final-CTA "logo resolve"
+   Opt-in via <ZephlynMark animated /> (default off, so header/footer marks
+   stay static). The hub breathes, the four corner dots twinkle clockwise in
+   sequence, and the whole mark carries a soft pulsing purple glow — the brand
+   echo of the constellation settling. Disabled under reduced motion.
+   ============================================================ */
+@media (prefers-reduced-motion: no-preference) {
+  .zeph-mark--animated {
+    animation: zeph-mark-glow 3.4s ease-in-out infinite;
+    will-change: filter;
+  }
+  .zeph-mark--animated .zeph-hub-ring {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: zeph-hub-ring 3.4s ease-in-out infinite;
+  }
+  .zeph-mark--animated .zeph-hub-core {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: zeph-hub-core 3.4s ease-in-out infinite;
+  }
+  .zeph-mark--animated .zeph-dot {
+    animation: zeph-dot-twinkle 3.6s ease-in-out infinite;
+  }
+  /* Clockwise stagger from top-left → top-right → bottom-right → bottom-left. */
+  .zeph-mark--animated .zeph-dot:nth-of-type(1) { animation-delay: 0s; }
+  .zeph-mark--animated .zeph-dot:nth-of-type(2) { animation-delay: 0.45s; }
+  .zeph-mark--animated .zeph-dot:nth-of-type(3) { animation-delay: 0.9s; }
+  .zeph-mark--animated .zeph-dot:nth-of-type(4) { animation-delay: 1.35s; }
+}
+
+@keyframes zeph-mark-glow {
+  0%, 100% { filter: drop-shadow(0 0 4px color-mix(in srgb, var(--primary) 32%, transparent)); }
+  50%      { filter: drop-shadow(0 0 12px color-mix(in srgb, var(--primary) 60%, transparent)); }
+}
+@keyframes zeph-hub-ring {
+  0%, 100% { transform: scale(1);    opacity: 0.18; }
+  50%      { transform: scale(1.5);  opacity: 0.42; }
+}
+@keyframes zeph-hub-core {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.14); }
+}
+@keyframes zeph-dot-twinkle {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* ============================================================
    7.  Reduced motion — respect user preference
    ============================================================ */
 @media (prefers-reduced-motion: reduce) {

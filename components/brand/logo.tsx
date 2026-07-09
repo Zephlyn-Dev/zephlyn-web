@@ -28,6 +28,13 @@ type MarkProps = React.SVGProps<SVGSVGElement> & {
    * against busy backgrounds (e.g. inside the boxed header tile).
    */
   bold?: boolean;
+  /**
+   * Opt-in living animation — the hub breathes, the corner dots twinkle in
+   * sequence, and the mark carries a soft pulsing glow. Off by default (so the
+   * header/footer marks stay static); used on the final-CTA logo resolve.
+   * Disabled under `prefers-reduced-motion` (see globals.css §6.97).
+   */
+  animated?: boolean;
 };
 
 export function ZephlynMark({
@@ -35,6 +42,7 @@ export function ZephlynMark({
   accent,
   mono = false,
   bold = false,
+  animated = false,
   className,
   ...props
 }: MarkProps) {
@@ -53,7 +61,7 @@ export function ZephlynMark({
       height={size}
       role="img"
       aria-label="Zephlyn"
-      className={cn("inline-block shrink-0", className)}
+      className={cn("inline-block shrink-0", animated && "zeph-mark--animated", className)}
       {...props}
     >
       <g fill="none" stroke="currentColor" strokeLinecap="round">
@@ -73,13 +81,26 @@ export function ZephlynMark({
         />
       </g>
       <g fill="currentColor">
-        <circle cx="16" cy="32" r={dotR} />
-        <circle cx="84" cy="32" r={dotR} />
-        <circle cx="16" cy="68" r={dotR} />
-        <circle cx="84" cy="68" r={dotR} />
+        <circle className={animated ? "zeph-dot" : undefined} cx="16" cy="32" r={dotR} />
+        <circle className={animated ? "zeph-dot" : undefined} cx="84" cy="32" r={dotR} />
+        <circle className={animated ? "zeph-dot" : undefined} cx="84" cy="68" r={dotR} />
+        <circle className={animated ? "zeph-dot" : undefined} cx="16" cy="68" r={dotR} />
       </g>
-      <circle cx="50" cy="50" r={hubOuterR} fill={hubFill} opacity={bold ? 0.32 : 0.18} />
-      <circle cx="50" cy="50" r={hubInnerR} fill={hubFill} />
+      <circle
+        className={animated ? "zeph-hub-ring" : undefined}
+        cx="50"
+        cy="50"
+        r={hubOuterR}
+        fill={hubFill}
+        opacity={bold ? 0.32 : 0.18}
+      />
+      <circle
+        className={animated ? "zeph-hub-core" : undefined}
+        cx="50"
+        cy="50"
+        r={hubInnerR}
+        fill={hubFill}
+      />
     </svg>
   );
 }
@@ -121,6 +142,8 @@ type LogoProps = React.HTMLAttributes<HTMLDivElement> & {
    * gives the header a stronger anchor.
    */
   boxed?: boolean;
+  /** Forwarded to the mark — living hub/dots/glow animation. Default off. */
+  animated?: boolean;
 };
 
 export function ZephlynLogo({
@@ -128,6 +151,7 @@ export function ZephlynLogo({
   iconOnly = false,
   stacked = false,
   boxed = false,
+  animated = false,
   className,
   ...props
 }: LogoProps) {
@@ -159,7 +183,7 @@ export function ZephlynLogo({
           <ZephlynMark size={innerMarkSize} mono bold />
         </span>
       ) : (
-        <ZephlynMark size={size} />
+        <ZephlynMark size={size} animated={animated} />
       )}
       {!iconOnly && (
         <ZephlynWordmark
