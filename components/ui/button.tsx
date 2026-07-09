@@ -79,6 +79,23 @@ const sizes: Record<Size, string> = {
   icon: "size-10 p-0",
 };
 
+/**
+ * The single source of truth for button styling. Use it when you need the
+ * button look on a non-`<button>` element (e.g. an `<a>`), so every clickable
+ * on the page resolves to the same variants instead of bespoke one-offs.
+ */
+export function buttonVariants({
+  variant = "primary",
+  size = "md",
+  className,
+}: {
+  variant?: Variant;
+  size?: Size;
+  className?: string;
+} = {}) {
+  return cn(base, variants[variant], sizes[size], className);
+}
+
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: Variant;
@@ -120,7 +137,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button
         ref={ref}
-        className={cn(base, variants[variant], sizes[size], className)}
+        className={buttonVariants({ variant, size, className })}
         disabled={disabled || loading}
         aria-busy={loading || undefined}
         {...props}
@@ -128,6 +145,34 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         {loading ? <Spinner /> : null}
         {children}
       </button>
+    );
+  }
+);
+
+export interface ButtonLinkProps
+  extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+  variant?: Variant;
+  size?: Size;
+}
+
+/**
+ * Anchor styled as a button — for links that navigate (mailto:, in-page
+ * anchors, routes). Shares the exact variants/sizes with <Button> so the
+ * page has a single button primitive, not parallel styles.
+ */
+export const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
+  function ButtonLink(
+    { className, variant = "primary", size = "md", children, ...props },
+    ref
+  ) {
+    return (
+      <a
+        ref={ref}
+        className={buttonVariants({ variant, size, className })}
+        {...props}
+      >
+        {children}
+      </a>
     );
   }
 );
