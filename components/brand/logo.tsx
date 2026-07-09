@@ -29,9 +29,11 @@ type MarkProps = React.SVGProps<SVGSVGElement> & {
    */
   bold?: boolean;
   /**
-   * Opt-in living animation — the hub breathes, the corner dots twinkle in
+   * Opt-in idle animation — the hub breathes, the corner dots twinkle in
    * sequence, and the mark carries a soft pulsing glow. Off by default (so the
-   * header/footer marks stay static); used on the final-CTA logo resolve.
+   * header/footer marks stay static). The final CTA uses <LogoResolve>
+   * (animations/logo-resolve.tsx) instead: a one-shot scroll-triggered draw-in
+   * that adds the idle class itself when it finishes.
    * Disabled under `prefers-reduced-motion` (see globals.css §6.97).
    */
   animated?: boolean;
@@ -64,30 +66,39 @@ export function ZephlynMark({
       className={cn("inline-block shrink-0", animated && "zeph-mark--animated", className)}
       {...props}
     >
+      {/* Part classes are always present (inert without a parent animation
+          class) so entrance/idle animations can target dots, rails, wave and
+          hub. pathLength=1 normalizes the strokes for dashoffset draw-ins. */}
       <g fill="none" stroke="currentColor" strokeLinecap="round">
         <path
+          className="zeph-rail"
           d="M 16 32 C 30 32 36 32 50 32 C 64 32 70 32 84 32"
           strokeWidth={railWidth}
           opacity={railOpacity}
+          pathLength={1}
         />
         <path
+          className="zeph-rail"
           d="M 16 68 C 30 68 36 68 50 68 C 64 68 70 68 84 68"
           strokeWidth={railWidth}
           opacity={railOpacity}
+          pathLength={1}
         />
         <path
+          className="zeph-wave"
           d="M 14 50 C 26 36 38 64 50 50 C 62 36 74 64 86 50"
           strokeWidth={waveWidth}
+          pathLength={1}
         />
       </g>
       <g fill="currentColor">
-        <circle className={animated ? "zeph-dot" : undefined} cx="16" cy="32" r={dotR} />
-        <circle className={animated ? "zeph-dot" : undefined} cx="84" cy="32" r={dotR} />
-        <circle className={animated ? "zeph-dot" : undefined} cx="84" cy="68" r={dotR} />
-        <circle className={animated ? "zeph-dot" : undefined} cx="16" cy="68" r={dotR} />
+        <circle className="zeph-dot" cx="16" cy="32" r={dotR} />
+        <circle className="zeph-dot" cx="84" cy="32" r={dotR} />
+        <circle className="zeph-dot" cx="84" cy="68" r={dotR} />
+        <circle className="zeph-dot" cx="16" cy="68" r={dotR} />
       </g>
       <circle
-        className={animated ? "zeph-hub-ring" : undefined}
+        className="zeph-hub-ring"
         cx="50"
         cy="50"
         r={hubOuterR}
@@ -95,7 +106,7 @@ export function ZephlynMark({
         opacity={bold ? 0.32 : 0.18}
       />
       <circle
-        className={animated ? "zeph-hub-core" : undefined}
+        className="zeph-hub-core"
         cx="50"
         cy="50"
         r={hubInnerR}
@@ -188,7 +199,10 @@ export function ZephlynLogo({
       {!iconOnly && (
         <ZephlynWordmark
           size={Math.round(size * (boxed ? 1.1 : 1.05))}
-          className="hidden md:inline-block"
+          /* Shown on phones too (brand name shouldn't wait for the footer);
+             hidden only on very narrow screens where the header CTA needs
+             the room. 380 keeps 390/393px phones (the most common) covered. */
+          className="hidden min-[380px]:inline-block"
         />
       )}
     </div>

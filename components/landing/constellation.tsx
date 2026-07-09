@@ -32,7 +32,6 @@
  */
 
 import * as React from "react";
-import { useTheme } from "@/components/theme-provider";
 import { STARS, EDGES, mulberry32 } from "./constellation-data";
 
 /* ----------------------------------------------------------------------------
@@ -112,7 +111,6 @@ const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 type CSSVars = React.CSSProperties & Record<string, string | number>;
 
 export function Constellation() {
-  const { resolvedTheme } = useTheme();
   const svgRef = React.useRef<SVGSVGElement>(null);
   const [ambientCount, setAmbientCount] = React.useState(60);
 
@@ -128,13 +126,14 @@ export function Constellation() {
     return () => mq.removeEventListener("change", apply);
   }, []);
 
-  // Scroll + hover wiring. Re-runs on theme change (line multiplier) and when
-  // the ambient field rebuilds (so freshly-mounted nodes get wired up).
+  // Scroll + hover wiring. Re-runs when the ambient field rebuilds (so
+  // freshly-mounted nodes get wired up). Site is dark-only → no line-opacity
+  // theme multiplier.
   React.useEffect(() => {
     const svg = svgRef.current;
     if (!svg) return;
 
-    const lineMul = resolvedTheme === "dark" ? 1 : 0.3;
+    const lineMul = 1;
 
     const nstars = Array.from(svg.querySelectorAll<SVGGElement>("[data-nstar]"));
     const halos = Array.from(svg.querySelectorAll<SVGCircleElement>("[data-halo]"));
@@ -246,7 +245,7 @@ export function Constellation() {
       if (raf) cancelAnimationFrame(raf);
       if (hraf) cancelAnimationFrame(hraf);
     };
-  }, [resolvedTheme, ambient]);
+  }, [ambient]);
 
   return (
     <div className="constellation-layer" aria-hidden>

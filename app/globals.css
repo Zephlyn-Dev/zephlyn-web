@@ -216,7 +216,10 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
-    color-scheme: light dark;
+    color-scheme: dark; /* site is dark-only */
+    /* Decorative bleed (.text-scrim::before extends past its parent) must not
+       widen the scrollable area on narrow viewports. */
+    overflow-x: clip;
   }
 
   body {
@@ -224,6 +227,15 @@
     color: var(--foreground);
     font-family: var(--zeph-font-body);
     font-feature-settings: "ss01", "cv11";
+    /* Pairs with the html rule above — Chrome only stops horizontal panning
+       when BOTH root boxes clip. */
+    overflow-x: clip;
+  }
+
+  /* In-page anchor targets (#how, #faq, …) rest below the fixed header
+     instead of having their eyebrow/heading clipped behind it. */
+  [id] {
+    scroll-margin-top: 5rem;
   }
 
   ::selection {
@@ -252,14 +264,14 @@
   .type-display {
     font-family: var(--zeph-font-display);
     font-weight: 800;
-    font-size: clamp(3rem, 6vw, 4.5rem);     /* 48 → 72 */
+    font-size: clamp(2.5rem, 6vw, 4.5rem);   /* 40 → 72 (40 fits 320px viewports) */
     line-height: 1.02;
     letter-spacing: -0.04em;
   }
   .type-h1 {
     font-family: var(--zeph-font-display);
     font-weight: 700;
-    font-size: clamp(2.25rem, 4vw, 3.5rem);  /* 36 → 56 */
+    font-size: clamp(2rem, 4vw, 3.5rem);     /* 32 → 56 */
     line-height: 1.05;
     letter-spacing: -0.035em;
   }

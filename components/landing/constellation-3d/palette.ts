@@ -1,68 +1,116 @@
 /**
- * 3D scene palette + quality tiers + ambient cloud generation.
+ * 3D scene palette + quality tiers + starfield generation.
  *
- * The 3D enhancement runs in DARK MODE ONLY (light mode serves the SVG — the
- * sanctioned escape hatch, see constellation-layer.tsx). So these colors mirror
- * the dark constellation tokens from globals.css:
- *   star   #F8F4E8  (--constellation-star, warm white)
- *   line   #7C3AED  (--primary dark, the purple through-line)
+ * The site is DARK-ONLY: warm-white emissive stars, additive blending, bloom.
+ * Colors mirror the dark constellation tokens (--constellation-star #F8F4E8).
+ * (SceneTheme keeps its blending/bloom knobs so an alternate palette stays a
+ * data change, not a rebuild.)
  *
- * TUNING — the constants below control how busy / calm the field reads. Lower
- * STAR_SIZE / bloom / AMBIENT_LAYERS[].opacity to calm it; raise TWINKLE/DRIFT
- * amplitudes to liven it.
+ * TUNING — the constants below control how busy / fast the flight reads.
+ * Lower SPEED.idle / SPEED.gain to calm the travel; raise AMBIENT_LAYERS
+ * opacity / STAR_SIZE to brighten the field.
  */
 
-import * as THREE from "three";
 import { mulberry32 } from "../constellation-data";
+import { isMobileLike } from "@/lib/webgl";
 
-export const COLORS = {
-  star: new THREE.Color("#F8F4E8"),
-  starBright: new THREE.Color("#FBF8F0"), // glow stars — warm, NOT pure white
-  line: new THREE.Color("#7C3AED"),
-};
+/** Camera is fixed near the origin; the WORLD travels past it. */
+export const CAMERA = { z: 6, fov: 60 };
 
-/** Scroll fraction over which a star/line resolves — matches the SVG REVEAL_BAND. */
+/** World units the corridor (shapes + plexus) advances over the full scroll. */
+export const TRAVEL = 100;
+
+/** Wrapping ambient starfield: stars recycle over `length`, wrapping `ahead`
+ *  world units behind the camera so they exit the frustum before respawning. */
+export const WRAP = { length: 130, ahead: 8 };
+
+/** Forward-flight speed (world units/s): a constant idle drift plus a damped
+ *  boost from scroll velocity — scrolling makes space stream faster, capped so
+ *  it never turns into a nauseating warp. */
+export const SPEED = { idle: 0.8, gain: 0.35, cap: 14, smooth: 2.5 };
+
+/** Scroll fraction over which a star/line resolves — matches the SVG. */
 export const REVEAL_BAND = 0.05;
 
-/* Narrative diamond sizing (world units, at full reveal). Glow stars read a bit
-   larger; `perR` adds per-star variation from the star's radius so they aren't
-   all the same size. Kept small so they're background accents, not blobs. */
+/* Narrative diamond sizing (world units, at full reveal). */
 export const STAR_SIZE = {
-  base: 0.058, // regular star
-  glow: 0.115, // glow star
+  base: 0.07,
+  glow: 0.13,
   perR: 0.02, // × (r - 1.4) added on top
 };
 
 /* Per-narrative-star twinkle (opacity shimmer). Subtle and slow. */
 export const STAR_TWINKLE = { amp: 0.26, speed: 0.65 };
 
-/* Ambient field as 3 depth layers (far/tiny/faint → near/larger/brighter) so
-   point sizes vary and there's a sense of depth. Each layer twinkles (whole-
-   layer opacity shimmer) at its own phase so the field never pulses in unison.
-   Each layer also DRIFTS: it slowly slides along its own elliptical path (dx/dy
-   world units, dSpeed rad/s, dPhase). The near layer drifts most → parallax
-   depth. This is the idle motion you see when not scrolling. Raise dx/dy
-   (distance) or dSpeed (pace) to make it more obvious; lower them to calm it. */
+/* Plexus field rendering. `band` = scroll fraction over which a link draws;
+   `densify` ramps overall link visibility up across the page so connections
+   read sparse at the top and woven by the end. */
+export const PLEXUS = {
+  band: 0.06,
+  starSize: 0.1,
+  starOpacity: 0.5,
+  lineAlpha: 0.55,
+  densifyFrom: 0.05,
+  densifyTo: 0.75,
+  densifyFloor: 0.35,
+};
+
+export type SceneTheme = {
+  star: string;
+  starBright: string;
+  line: string;
+  fog: string;
+  fogNear: number;
+  fogFar: number;
+  /** additive (emissive, dark) vs normal alpha (ink, light) blending */
+  additive: boolean;
+  /** multiplies the tier's bloom intensity; 0 disables bloom entirely */
+  bloom: number;
+  /** line alpha multiplier (light mode lines sit quieter) */
+  lineMul: number;
+};
+
+export const SCENE_THEME: SceneTheme = {
+  star: "#F8F4E8",
+  starBright: "#FBF8F0",
+  line: "#7C3AED",
+  fog: "#08080C",
+  fogNear: 24,
+  fogFar: 118,
+  additive: true,
+  bloom: 1,
+  lineMul: 1,
+};
+
+/* Ambient wrapping field as 3 depth layers (far/tiny/faint → near/larger/
+   brighter) so point sizes vary as they stream past. Each layer twinkles
+   (whole-layer opacity shimmer) at its own phase, and drifts laterally on a
+   slow elliptical path for life when the flight idles. */
 export const AMBIENT_LAYERS = [
-  { frac: 0.54, size: 0.05, opacity: 0.4, seed: 0xa1f3, twAmp: 0.14, twSpeed: 0.25, phase: 0.0, dx: 0.8, dy: 0.55, dSpeed: 0.14, dPhase: 0.0 },
-  { frac: 0.32, size: 0.095, opacity: 0.52, seed: 0xb2e7, twAmp: 0.18, twSpeed: 0.36, phase: 1.9, dx: -1.2, dy: 0.85, dSpeed: 0.17, dPhase: 2.1 },
-  { frac: 0.14, size: 0.155, opacity: 0.66, seed: 0xc35d, twAmp: 0.24, twSpeed: 0.47, phase: 3.4, dx: 1.7, dy: -1.1, dSpeed: 0.12, dPhase: 4.0 },
+  { frac: 0.54, size: 0.045, opacity: 0.38, seed: 0xa1f3, twAmp: 0.14, twSpeed: 0.25, phase: 0.0, dx: 0.7, dy: 0.5, dSpeed: 0.14, dPhase: 0.0 },
+  { frac: 0.32, size: 0.09, opacity: 0.5, seed: 0xb2e7, twAmp: 0.18, twSpeed: 0.36, phase: 1.9, dx: -1.0, dy: 0.7, dSpeed: 0.17, dPhase: 2.1 },
+  { frac: 0.14, size: 0.15, opacity: 0.62, seed: 0xc35d, twAmp: 0.24, twSpeed: 0.47, phase: 3.4, dx: 1.4, dy: -0.9, dSpeed: 0.12, dPhase: 4.0 },
 ];
 
 export type Tier = {
   ambient: number; // ambient point count
+  plexus: number; // plexus star count
   dprMax: number; // pixel-ratio cap
   bloom: number; // bloom intensity
+  aa: boolean; // canvas antialias
 };
 
-export const TIERS: Record<"high" | "mid", Tier> = {
-  high: { ambient: 1200, dprMax: 1.75, bloom: 0.5 },
-  mid: { ambient: 650, dprMax: 1.25, bloom: 0.35 },
+export const TIERS: Record<"high" | "mid" | "low", Tier> = {
+  high: { ambient: 1300, plexus: 84, dprMax: 1.75, bloom: 0.55, aa: true },
+  mid: { ambient: 750, plexus: 60, dprMax: 1.25, bloom: 0.4, aa: true },
+  low: { ambient: 360, plexus: 36, dprMax: 1, bloom: 0, aa: false },
 };
 
-/** Upfront tier pick from coarse device signals. Runtime PerformanceMonitor
- *  scales further down from here if frames sag. */
+/** Upfront tier pick from coarse device signals. Phones/tablets get the `low`
+ *  tier (few stars, dpr 1, no bloom); the runtime PerformanceMonitor falls all
+ *  the way back to the SVG if even that sags. */
 export function pickTier(): Tier {
+  if (isMobileLike()) return TIERS.low;
   const nav = navigator as Navigator & {
     deviceMemory?: number;
     hardwareConcurrency?: number;
@@ -73,16 +121,16 @@ export function pickTier(): Tier {
   return strong ? TIERS.high : TIERS.mid;
 }
 
-/** Deterministic volumetric ambient star cloud the camera flies through.
- *  Spans wider than the narrative constellation, deeper in z. `seed` lets each
- *  depth layer have an independent distribution. */
+/** Deterministic wrapping star cloud. Base z lives in [0, WRAP.length); the
+ *  scene maps it to an effective z behind/ahead of the camera each frame as
+ *  travel accumulates. `seed` lets each depth layer distribute independently. */
 export function makeAmbient(count: number, seed: number): Float32Array {
   const rand = mulberry32(seed);
   const pos = new Float32Array(count * 3);
   for (let i = 0; i < count; i++) {
-    pos[i * 3] = (rand() - 0.5) * 64; // x  ±32
-    pos[i * 3 + 1] = (rand() - 0.5) * 46; // y  ±23
-    pos[i * 3 + 2] = -42 + rand() * 66; // z  [-42, 24]
+    pos[i * 3] = (rand() - 0.5) * 32; // x  ±16
+    pos[i * 3 + 1] = (rand() - 0.5) * 20; // y  ±10
+    pos[i * 3 + 2] = rand() * WRAP.length; // base z, wrapped at runtime
   }
   return pos;
 }

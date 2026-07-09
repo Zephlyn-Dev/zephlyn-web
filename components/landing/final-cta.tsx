@@ -1,6 +1,6 @@
 import { Section, Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
-import { ZephlynMark } from "@/components/brand/logo";
+import { LogoResolve } from "@/components/animations/logo-resolve";
 import { CONTACT_EMAIL, CTA } from "@/components/landing/content";
 
 export function FinalCta() {
@@ -8,12 +8,10 @@ export function FinalCta() {
     <Section id="contact" className="relative">
       <Container className="max-w-[1000px]">
         <div className="cta-band flex flex-col items-center gap-6 px-6 py-14 text-center md:px-12 md:py-20">
-          {/* The constellation resolves into a calm cluster behind this mark.
-              Logo-agnostic: we anchor the resolved field to the logo's
-              position rather than tracing its geometry, so swapping the
-              logo later doesn't break the section. The mark animates here (hub
-              breathes, dots twinkle, soft glow) as the brand "resolve" beat. */}
-          <ZephlynMark size={80} bold animated className="text-foreground" />
+          {/* The brand "resolve" beat: the mark draws itself in on scroll —
+              dots pop (scattered), strokes connect them, hub blooms — then
+              settles into the quiet idle breathing loop. */}
+          <LogoResolve size={80} className="text-foreground" />
 
           <h2 className="type-h1 max-w-[18ch] text-balance text-foreground">
             {CTA.headline}

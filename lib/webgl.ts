@@ -47,9 +47,9 @@ export function prefersReducedMotion(): boolean {
   return mql("(prefers-reduced-motion: reduce)");
 }
 
-/** Phones and (by default) tablets: a full-page WebGL field is a battery / perf
- *  liability and the SVG already looks great there. Treat any narrow viewport
- *  or touch-primary device as "mobile". */
+/** Narrow viewports and touch-primary devices. No longer a hard block for 3D —
+ *  it selects the lightweight `low` quality tier (see constellation-3d/palette),
+ *  with the SVG kept as the runtime performance escape hatch. */
 export function isMobileLike(): boolean {
   const narrow = mql("(max-width: 767px)");
   const touchPrimary = mql("(pointer: coarse)") && !mql("(pointer: fine)");
@@ -57,13 +57,12 @@ export function isMobileLike(): boolean {
 }
 
 /**
- * The upfront gate. Returns true only for capable, non-reduced-motion,
- * desktop-class machines with working WebGL. Everything else gets the SVG.
+ * The upfront gate. Mobile is allowed (it gets the low tier); only
+ * reduced-motion, clearly low-powered, or WebGL-less devices get the SVG.
  */
 export function canRender3D(): boolean {
   if (typeof window === "undefined") return false;
   if (prefersReducedMotion()) return false; // the flying camera IS the 3D
-  if (isMobileLike()) return false; // mobile/tablet → SVG
   if (isLowPowerDevice()) return false;
   if (!hasWebGL()) return false;
   return true;

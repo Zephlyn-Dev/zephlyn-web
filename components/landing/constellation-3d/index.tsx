@@ -8,20 +8,22 @@
  * scene shares constellation-data with the SVG, so a fallback at any moment is
  * visually consistent.
  *
- * Cost controls here: pixel-ratio cap + adaptive tier (palette.ts), and the
- * render loop is paused (`frameloop="never"`) whenever the tab is hidden.
+ * Cost controls here: pixel-ratio cap + adaptive tier (palette.ts), antialias
+ * off on the low (mobile) tier, and the render loop is paused
+ * (`frameloop="never"`) whenever the tab is hidden.
  */
 
 import * as React from "react";
 import { Canvas } from "@react-three/fiber";
 import { Scene } from "./scene";
-import { pickTier } from "./palette";
+import { pickTier, SCENE_THEME, CAMERA } from "./palette";
 
 export function Constellation3D({
-  onContextLost,
+  onFail,
 }: {
-  /** Called on a lost WebGL context so the parent can swap to the SVG. */
-  onContextLost?: () => void;
+  /** Called on lost WebGL context or a sustained performance decline, so the
+   *  parent can swap to the SVG. */
+  onFail?: () => void;
 }) {
   const tier = React.useMemo(() => pickTier(), []);
   const [active, setActive] = React.useState(true);
@@ -38,25 +40,25 @@ export function Constellation3D({
       <Canvas
         frameloop={active ? "always" : "never"}
         gl={{
-          antialias: true,
+          antialias: tier.aa,
           alpha: true,
           powerPreference: "high-performance",
           failIfMajorPerformanceCaveat: false,
         }}
         dpr={[1, tier.dprMax]}
-        camera={{ position: [0, 0, 28], fov: 55 }}
+        camera={{ position: [0, 0.4, CAMERA.z], fov: CAMERA.fov }}
         onCreated={({ gl }) => {
           gl.domElement.addEventListener(
             "webglcontextlost",
             (e) => {
               e.preventDefault();
-              onContextLost?.();
+              onFail?.();
             },
             { once: true }
           );
         }}
       >
-        <Scene tier={tier} />
+        <Scene tier={tier} theme={SCENE_THEME} onFail={onFail} />
       </Canvas>
     </div>
   );

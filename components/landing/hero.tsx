@@ -31,12 +31,12 @@ export function Hero() {
             {HERO.subhead}
           </p>
 
-          <div className="mt-9 flex flex-col items-center gap-3 sm:flex-row">
-            <ButtonLink href={`mailto:${CONTACT_EMAIL}`} size="lg">
+          <div className="mt-9 flex w-full max-w-[340px] flex-col items-stretch gap-3 sm:w-auto sm:max-w-none sm:flex-row sm:items-center">
+            <ButtonLink href={`mailto:${CONTACT_EMAIL}`} size="lg" className="w-full sm:w-auto">
               {HERO.primaryCta}
               <ArrowRight />
             </ButtonLink>
-            <ButtonLink href="#how" variant="outline" size="lg">
+            <ButtonLink href="#how" variant="outline" size="lg" className="w-full sm:w-auto">
               {HERO.secondaryCta}
             </ButtonLink>
           </div>

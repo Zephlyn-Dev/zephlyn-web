@@ -51,14 +51,16 @@ export function Connection() {
           {CONNECTION.lead}
         </p>
 
-        {/* Today — scattered  →  With Zephlyn — connected */}
-        <div className="landing-card mt-12 grid grid-cols-1 items-center gap-6 p-6 md:grid-cols-[1fr_auto_1fr] md:gap-4 md:p-8">
-          <figure className="flex flex-col items-center gap-4">
-            <div className="w-full max-w-[240px]">
+        {/* Today — scattered  →  With Zephlyn — connected. Side-by-side at
+            every width — the diagrams are simple enough to read small, and the
+            horizontal before→after beat is the whole point. */}
+        <div className="landing-card mt-12 grid grid-cols-[1fr_auto_1fr] items-center gap-3 p-5 md:gap-4 md:p-8">
+          <figure className="flex flex-col items-center gap-3 md:gap-4">
+            <div className="w-full max-w-[170px] md:max-w-[240px]">
               <ScatteredDiagram />
             </div>
-            <figcaption className="type-caption text-muted-foreground">
-              Today — scattered
+            <figcaption className="type-caption text-center text-muted-foreground">
+              Today: scattered
             </figcaption>
           </figure>
 
@@ -66,17 +68,17 @@ export function Connection() {
             aria-hidden
             className="flex items-center justify-center text-muted-foreground"
           >
-            <svg viewBox="0 0 24 24" className="size-6 rotate-90 md:rotate-0" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg viewBox="0 0 24 24" className="size-5 md:size-6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M5 12h14M13 6l6 6-6 6" />
             </svg>
           </div>
 
-          <figure className="flex flex-col items-center gap-4">
-            <div className="w-full max-w-[240px]">
+          <figure className="flex flex-col items-center gap-3 md:gap-4">
+            <div className="w-full max-w-[170px] md:max-w-[240px]">
               <ConnectedDiagram />
             </div>
-            <figcaption className="type-caption font-semibold text-purple-700 dark:text-purple-400">
-              With Zephlyn — connected
+            <figcaption className="type-caption text-center font-semibold text-purple-700 dark:text-purple-400">
+              With Zephlyn: connected
             </figcaption>
           </figure>
         </div>

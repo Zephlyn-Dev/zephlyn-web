@@ -4,6 +4,10 @@
  * All strings are clean literals: no space before any comma or period (the
  * mockup rendered artifacts like "business ," — fixed here). The contact
  * email is the shared founder inbox and the only address on public surfaces.
+ *
+ * Style rule: NO em dashes in user-facing copy. Use a period, comma, or colon
+ * instead. (Em dashes in code comments are fine; this rule is about what
+ * renders on the page.)
  */
 
 export const CONTACT_EMAIL = "social@zephlyn.io";
@@ -20,7 +24,7 @@ export const HERO = {
 export const SCATTER = {
   eyebrow: "The scatter",
   headline: "Right now, it all lives in your head.",
-  lead: "Nothing's connected. Every task is a loose thread you have to hold onto yourself — and the moment you get busy, threads start slipping.",
+  lead: "Nothing's connected. Every task is a loose thread you have to hold onto yourself, and the moment you get busy, threads start slipping.",
   cards: [
     {
       title: "Bookings in a notebook",
@@ -28,7 +32,7 @@ export const SCATTER = {
     },
     {
       title: "Calls to voicemail",
-      body: "You're on the job, the phone rings, nobody answers — and the lead quietly goes somewhere else.",
+      body: "You're on the job, the phone rings, nobody answers, and the lead quietly goes somewhere else.",
     },
     {
       title: "Inventory by hand",
@@ -44,7 +48,7 @@ export const SCATTER = {
 export const SERVICES = {
   eyebrow: "What we build",
   headline: "Three systems. One connected flow.",
-  lead: "Three equal pillars. On their own, useful. Connected, they become the thing your business never had — a system that runs without you holding it together.",
+  lead: "Three equal pillars. On their own, useful. Connected, they become the thing your business never had: a system that runs without you holding it together.",
   cards: [
     {
       no: "01",
@@ -87,7 +91,7 @@ export const CONNECTION = {
     {
       no: "Step 01",
       title: "We map how you work",
-      body: "We sit with how your business actually runs today — every task, every tool, every gap.",
+      body: "We sit with how your business actually runs today: every task, every tool, every gap.",
     },
     {
       no: "Step 02",
@@ -105,11 +109,11 @@ export const CONNECTION = {
 export const HONESTY = {
   eyebrow: "Honesty",
   headline: "Let's be honest about fit.",
-  lead: "We'd rather tell you the truth than win the wrong customer. Here's who we're built for — and who we're not.",
+  lead: "We'd rather tell you the truth than win the wrong customer. Here's who we're built for, and who we're not.",
   forYou: {
     title: "This is for you if…",
     items: [
-      "You have no systems yet — everything is manual and in your head.",
+      "You have no systems yet. Everything is manual and in your head.",
       "You're an owner drowning in manual admin instead of doing the work you're good at.",
       "You're losing leads to missed calls and slow replies.",
     ],
@@ -117,7 +121,7 @@ export const HONESTY = {
   notYet: {
     title: "Probably not yet if…",
     items: [
-      "You're already fully automated — you don't need us to start from scratch.",
+      "You're already fully automated and don't need us to start from scratch.",
       "You want a cheap, self-serve app to configure yourself.",
       "You'd rather build it in-house. Zephlyn is done-for-you, start to finish.",
     ],
@@ -130,7 +134,7 @@ export const FAQ = {
   items: [
     {
       q: "How long does setup take?",
-      a: "Most setups run two to four weeks. We map your workflow, connect your tools, and test everything before it goes live — and you keep working the whole time.",
+      a: "Most setups run two to four weeks. We map your workflow, connect your tools, and test everything before it goes live, and you keep working the whole time.",
     },
     {
       q: "Do I have to switch the tools I use?",
@@ -138,7 +142,7 @@ export const FAQ = {
     },
     {
       q: "What if I'm not technical?",
-      a: "That's exactly the point. Zephlyn is done-for-you — you don't configure anything. We build the system, you use it. If you can run your business, you can use what we hand you.",
+      a: "That's exactly the point. Zephlyn is done-for-you. You don't configure anything: we build the system, you use it. If you can run your business, you can use what we hand you.",
     },
     {
       q: "What does it cost?",
@@ -150,7 +154,7 @@ export const FAQ = {
     },
     {
       q: "What if something breaks?",
-      a: "We monitor what we build and fix issues fast. You're not handed a tool and left alone — we stay on it, because the whole promise is a system you can stop thinking about.",
+      a: "We monitor what we build and fix issues fast. You're not handed a tool and left alone. We stay on it, because the whole promise is a system you can stop thinking about.",
     },
   ],
 };
@@ -161,7 +165,7 @@ export const CTA = {
     "You bring the scattered pieces. We'll turn them into one system that runs itself.",
   primaryCta: "Get in touch",
   founders:
-    "Two founders. Pre-revenue. Building this with our first customers — and we'd love for you to be one.",
+    "Two founders. Pre-revenue. Building this with our first customers, and we'd love for you to be one.",
 };
 
 export const FOOTER = {
